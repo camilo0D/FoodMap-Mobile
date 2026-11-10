@@ -10,10 +10,14 @@ import { useUserLocation } from "../hooks/useUserLocation";
 import { distanciaKm } from "../utils/geo";
 import { colors, radius, spacing } from "../theme";
 import type { Restaurante } from "../types";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "../navigation/types";
 
 const DISTANCIAS = [1, 3, 5, 10];
 
 export default function MapScreen() {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [restaurantes, setRestaurantes] = useState<Restaurante[]>([]);
     const [estado, setEstado] = useState<"cargando" | "ok" | "error">("cargando");
     const [busqueda, setBusqueda] = useState("");
@@ -154,7 +158,12 @@ export default function MapScreen() {
                         restaurante={seleccionado}
                         distanciaKm={distancias[seleccionado.id]}
                         onClose={() => setSeleccionado(null)}
-                        onVerMas={() => { }}
+                        onVerMas={() =>
+                            navigation.navigate("Detalle", {
+                                restaurante: seleccionado,
+                                distanciaKm: distancias[seleccionado.id],
+                            })
+                        }
                     />
                 </View>
             )}

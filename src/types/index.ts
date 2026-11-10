@@ -27,3 +27,22 @@ export type LoginResponse = {
     refresh: string;
     user: Usuario;
 };
+
+export type Plato = {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    precio: string;
+    imagen: string | null;
+    disponible: boolean;
+};
+
+export type Resena = {
+    id: string;
+    usuario: string;
+    usuario_username: string;
+    usuario_avatar: string | null;
+    rating: number;
+    comment: string;
+    created_at: string;
+};

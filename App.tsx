@@ -2,7 +2,7 @@ import { Platform, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import MainTabs from "./src/navigation/MainTabs";
+import RootNavigator from "./src/navigation/RootNavigator";
 
 const esWeb = Platform.OS === "web";
 
@@ -20,7 +20,7 @@ export default function App() {
       >
         <SafeAreaProvider>
           <NavigationContainer>
-            <MainTabs />
+            <RootNavigator />
           </NavigationContainer>
           <StatusBar style="dark" />
         </SafeAreaProvider>
