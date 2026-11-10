@@ -67,8 +67,8 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
 
                 {!!errorGeneral && <Text style={styles.errorGeneral}>{errorGeneral}</Text>}
 
-                <Pressable style={styles.boton} onPress={handleSubmit(enviar)} disabled={isSubmitting}>
-                    {isSubmitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.botonTxt}>Iniciar sesión</Text>}
+                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: 16 }}>
+                    <Text style={{ color: colors.textMuted, fontWeight: "600" }}>← Volver al inicio</Text>
                 </Pressable>
 
                 <View style={styles.pie}>

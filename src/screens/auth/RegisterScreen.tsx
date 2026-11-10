@@ -11,9 +11,9 @@ import { RegistroForm, registroSchema } from "../../schemas/auth";
 import { colors, radius, spacing } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
-export default function RegisterScreen({ navigation }: NativeStackScreenProps<RootStackParamList, "Registro">) {
+export default function RegisterScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, "Registro">) {
     const { login } = useAuth();
-    const [tipo, setTipo] = useState<"usuario" | "restaurante">("usuario");
+    const [tipo, setTipo] = useState<"usuario" | "restaurante">(route.params?.tipo ?? "usuario");
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const {
         control, handleSubmit, setError, formState: { errors, isSubmitting },
@@ -76,8 +76,8 @@ export default function RegisterScreen({ navigation }: NativeStackScreenProps<Ro
 
                 {!!errorGeneral && <Text style={styles.errorGeneral}>{errorGeneral}</Text>}
 
-                <Pressable style={styles.boton} onPress={handleSubmit(enviar)} disabled={isSubmitting}>
-                    {isSubmitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.botonTxt}>Crear mi cuenta</Text>}
+                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: 16 }}>
+                    <Text style={{ color: colors.textMuted, fontWeight: "600" }}>← Volver al inicio</Text>
                 </Pressable>
 
                 <View style={styles.pie}>
