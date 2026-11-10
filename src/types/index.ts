@@ -16,7 +16,7 @@ export type Restaurante = {
     direccion: string;
     latitud: string;
     longitud: string;
-    categoria: unknown;
+    categoria: { id: string; nombre: string; icono: string };
     horario: Record<string, string> | null;
     calificacion_promedio: string;
     total_calificaciones: number;
