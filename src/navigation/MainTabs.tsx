@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import MapScreen from "../screens/MapScreen";
-import { ExploreScreen, FavoritesScreen, ProfileScreen } from "../screens/Placeholders";
+import { ExploreScreen, FavoritesScreen } from "../screens/Placeholders";
+import ProfileScreen from "../screens/ProfileScreen";
 import { colors } from "../theme";
 
 const Tab = createBottomTabNavigator();
