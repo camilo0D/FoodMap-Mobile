@@ -7,4 +7,6 @@ export type RootStackParamList = {
     Registro: { tipo?: "usuario" | "restaurante" } | undefined;
     Tabs: undefined;
     Detalle: { restaurante: Restaurante; distanciaKm?: number | null };
+    RecuperarClave: undefined;
+    RestablecerClave: { email: string };
 };

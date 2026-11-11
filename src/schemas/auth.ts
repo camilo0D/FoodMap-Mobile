@@ -22,3 +22,20 @@ export const registroSchema = z
         path: ["confirmar"],
     });
 export type RegistroForm = z.infer<typeof registroSchema>;
+
+export const recuperarSchema = z.object({
+    email: z.string().min(1, "Escribe tu correo").email("Correo no válido"),
+});
+export type RecuperarForm = z.infer<typeof recuperarSchema>;
+
+export const restablecerSchema = z
+    .object({
+        codigo: z.string().regex(/^\d{6}$/, "El código tiene 6 dígitos"),
+        clave: z.string().min(8, "Mínimo 8 caracteres"),
+        confirmar: z.string().min(1, "Confirma tu contraseña"),
+    })
+    .refine((d) => d.clave === d.confirmar, {
+        message: "Las contraseñas no coinciden",
+        path: ["confirmar"],
+    });
+export type RestablecerForm = z.infer<typeof restablecerSchema>;

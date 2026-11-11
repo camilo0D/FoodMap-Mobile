@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import Logo from "../../components/Logo";
 import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
 import { LoginForm, loginSchema } from "../../schemas/auth";
@@ -34,9 +34,11 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-                <View style={styles.logo}>
-                    <Ionicons name="location" size={30} color="#fff" />
-                </View>
+                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: spacing.lg }}>
+                    <Text style={styles.volver}>← Volver al inicio</Text>
+                </Pressable>
+
+                <Logo size={56} />
                 <Text style={styles.marca}>FoodMap</Text>
                 <Text style={styles.titulo}>Bienvenido de nuevo</Text>
                 <Text style={styles.sub}>Inicia sesión en tu cuenta de FoodMap.</Text>
@@ -63,12 +65,15 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
                             />
                         )}
                     />
+                    <Pressable onPress={() => navigation.navigate("RecuperarClave")} style={{ alignSelf: "flex-end" }}>
+                        <Text style={styles.link}>¿Olvidaste tu contraseña?</Text>
+                    </Pressable>
                 </View>
 
                 {!!errorGeneral && <Text style={styles.errorGeneral}>{errorGeneral}</Text>}
 
-                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: 16 }}>
-                    <Text style={{ color: colors.textMuted, fontWeight: "600" }}>← Volver al inicio</Text>
+                <Pressable style={styles.boton} onPress={handleSubmit(enviar)} disabled={isSubmitting}>
+                    {isSubmitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.botonTxt}>Iniciar sesión</Text>}
                 </Pressable>
 
                 <View style={styles.pie}>
@@ -84,11 +89,8 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    scroll: { padding: spacing.xl, paddingTop: 48 },
-    logo: {
-        width: 56, height: 56, borderRadius: 28, backgroundColor: colors.primary,
-        alignItems: "center", justifyContent: "center",
-    },
+    scroll: { padding: spacing.xl, paddingTop: spacing.xl },
+    volver: { color: colors.textMuted, fontWeight: "600" },
     marca: { fontSize: 18, fontWeight: "800", color: colors.primary, marginTop: spacing.sm },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text, marginTop: spacing.xl },
     sub: { fontSize: 14, color: colors.textMuted, marginTop: 4 },

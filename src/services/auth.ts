@@ -22,3 +22,9 @@ export async function logout() {
         await tokenStorage.clear();
     }
 }
+
+export const solicitarCodigo = (email: string) =>
+    api.post("/auth/password-reset/request/", { email });
+
+export const restablecerClave = (email: string, code: string, password: string) =>
+    api.post("/auth/password-reset/confirm/", { email, code, password });

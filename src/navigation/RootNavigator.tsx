@@ -10,6 +10,9 @@ import HomeScreen from "../screens/HomeScreen";
 import { useAuth } from "../context/AuthContext";
 import { prefs } from "../services/prefs";
 import type { RootStackParamList } from "./types";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
+import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -42,6 +45,8 @@ export default function RootNavigator() {
                     <Stack.Screen name="Inicio" component={HomeScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen name="Registro" component={RegisterScreen} />
+                    <Stack.Screen name="RecuperarClave" component={ForgotPasswordScreen} />
+                    <Stack.Screen name="RestablecerClave" component={ResetPasswordScreen} />
                 </>
             )}
         </Stack.Navigator>
