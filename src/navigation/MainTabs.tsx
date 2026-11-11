@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import MapScreen from "../screens/MapScreen";
-import { ExploreScreen, FavoritesScreen } from "../screens/Placeholders";
-import ProfileScreen from "../screens/ProfileScreen";
 import { colors } from "../theme";
-
+import MapScreen from "../screens/MapScreen";
+import ExploreScreen from "../screens/ExploreScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import { FavoritesScreen } from "../screens/Placeholders";
 const Tab = createBottomTabNavigator();
 
 const iconos: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
