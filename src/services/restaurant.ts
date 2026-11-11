@@ -2,7 +2,7 @@ import { api, API_URL } from "./api";
 import type { Plato, Restaurante, Resena } from "../types";
 
 const API_ORIGIN = API_URL.replace(/\/api\/?$/, "");
-const fixImg = (u: string | null) =>
+export const fixImg = (u: string | null) =>
     u ? u.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/, API_ORIGIN) : null;
 
 export async function getRestaurantes(): Promise<Restaurante[]> {

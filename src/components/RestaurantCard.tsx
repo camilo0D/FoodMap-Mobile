@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import FavoriteButton from "./FavoriteButton";
 import { colors, radius, spacing } from "../theme";
 import type { Restaurante } from "../types";
 
@@ -29,6 +30,7 @@ export default function RestaurantCard({ restaurante: r, distanciaKm, onClose, o
                 <View style={styles.fila}>
                     <Ionicons name="star" size={14} color={colors.star} />
                     <Text style={styles.rating}>{Number(r.calificacion_promedio).toFixed(1)}</Text>
+                    <FavoriteButton restaurante={r} size={22} />
                     <Pressable style={styles.boton} onPress={onVerMas}>
                         <Text style={styles.botonTexto}>Ver más</Text>
                     </Pressable>
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
     info: { flex: 1, justifyContent: "space-between" },
     nombre: { fontSize: 16, fontWeight: "700", color: colors.text, paddingRight: 20 },
     detalle: { fontSize: 12, color: colors.textMuted },
-    fila: { flexDirection: "row", alignItems: "center", gap: 4 },
+    fila: { flexDirection: "row", alignItems: "center", gap: 8 },
     rating: { fontSize: 13, fontWeight: "600", color: colors.text, flex: 1 },
     boton: { backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 6 },
     botonTexto: { color: "#fff", fontSize: 12, fontWeight: "700" },

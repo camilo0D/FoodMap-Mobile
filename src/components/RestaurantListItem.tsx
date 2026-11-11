@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import FavoriteButton from "./FavoriteButton";
 import { estadoAbierto } from "../utils/horario";
 import { colors, radius, spacing } from "../theme";
 import type { Restaurante } from "../types";
@@ -21,6 +22,9 @@ export default function RestaurantListItem({ restaurante: r, distanciaKm, onPres
                 <View style={styles.rating}>
                     <Ionicons name="star" size={13} color={colors.star} />
                     <Text style={styles.ratingTxt}>{Number(r.calificacion_promedio).toFixed(1)}</Text>
+                </View>
+                <View style={styles.corazon}>
+                    <FavoriteButton restaurante={r} size={18} flotante />
                 </View>
                 {distanciaKm != null && (
                     <View style={styles.distancia}>
@@ -53,6 +57,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff", borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 4,
     },
     ratingTxt: { fontSize: 12, fontWeight: "700", color: colors.text },
+    corazon: { position: "absolute", top: 10, left: 10 },
     distancia: {
         position: "absolute", bottom: 10, left: 10, flexDirection: "row", alignItems: "center", gap: 3,
         backgroundColor: "rgba(0,0,0,0.55)", borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 4,

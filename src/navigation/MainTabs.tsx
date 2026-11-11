@@ -4,7 +4,7 @@ import { colors } from "../theme";
 import MapScreen from "../screens/MapScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import { FavoritesScreen } from "../screens/Placeholders";
+import FavoritesScreen from "../screens/FavoritesScreen";
 const Tab = createBottomTabNavigator();
 
 const iconos: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {

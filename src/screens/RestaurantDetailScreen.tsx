@@ -11,6 +11,7 @@ import { fechaCorta, precioCOP } from "../utils/format";
 import { colors, radius, spacing } from "../theme";
 import type { RootStackParamList } from "../navigation/types";
 import type { Plato, Resena } from "../types";
+import FavoriteButton from "../components/FavoriteButton";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Detalle">;
 type Tab = "info" | "menu" | "resenas";
@@ -56,6 +57,9 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
                     <Pressable style={[styles.atras, { top: insets.top + 8 }]} onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={22} color={colors.text} />
                     </Pressable>
+                    <View style={{ position: "absolute", right: spacing.lg, top: insets.top + 8 }}>
+                        <FavoriteButton restaurante={r} size={22} flotante />
+                    </View>
                 </View>
 
                 <View style={styles.cuerpo}>

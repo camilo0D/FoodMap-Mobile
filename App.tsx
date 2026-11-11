@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { AuthProvider } from "./src/context/AuthContext";
+import { FavoritesProvider } from "./src/context/FavoritesContext";
 
 const esWeb = Platform.OS === "web";
 
@@ -18,9 +19,11 @@ export default function App() {
       >
         <SafeAreaProvider>
           <AuthProvider>
-            <NavigationContainer>
-              <RootNavigator />
-            </NavigationContainer>
+            <FavoritesProvider>
+              <NavigationContainer>
+                <RootNavigator />
+              </NavigationContainer>
+            </FavoritesProvider>
           </AuthProvider>
           <StatusBar style="dark" />
         </SafeAreaProvider>
