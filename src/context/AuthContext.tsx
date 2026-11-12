@@ -41,8 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = async () => {
-        await authService.logout();
-        setUsuario(null);
+        try {
+            await authService.logout();
+        } catch {
+            /* aunque falle el servidor, se cierra la sesión local */
+        } finally {
+            await tokenStorage.clear();
+            setUsuario(null);
+        }
     };
 
     return <AuthContext.Provider value={{ usuario, cargando, login, logout }}>{children}</AuthContext.Provider>;

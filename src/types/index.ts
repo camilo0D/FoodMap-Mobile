@@ -46,3 +46,22 @@ export type Resena = {
     comment: string;
     created_at: string;
 };
+
+export type Perfil = {
+    id: string;
+    username: string;
+    email: string;
+    nombre: string;
+    bio: string;
+    avatar: string | null;
+    roles: string[];
+    created_at: string;
+};
+
+export type MiResena = {
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+    restaurante: { id: string; nombre: string; imagen: string | null };
+};

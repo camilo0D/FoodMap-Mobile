@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import TextField from "../../components/TextField";
+import { useAuth } from "../../context/AuthContext";
 import { restablecerClave, solicitarCodigo } from "../../services/auth";
 import { RestablecerForm, restablecerSchema } from "../../schemas/auth";
 import { colors, radius, spacing } from "../../theme";
@@ -15,6 +16,7 @@ export default function ResetPasswordScreen({
     navigation, route,
 }: NativeStackScreenProps<RootStackParamList, "RestablecerClave">) {
     const { email } = route.params;
+    const { usuario, logout } = useAuth();
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const [aviso, setAviso] = useState<string | null>(null);
     const [hecho, setHecho] = useState(false);
@@ -61,7 +63,10 @@ export default function ResetPasswordScreen({
                     <Text style={[styles.sub, { textAlign: "center" }]}>
                         Por seguridad cerramos tus otras sesiones. Inicia sesión con tu nueva contraseña.
                     </Text>
-                    <Pressable style={[styles.boton, { alignSelf: "stretch" }]} onPress={() => navigation.popToTop()}>
+                    <Pressable
+                        style={[styles.boton, { alignSelf: "stretch" }]}
+                        onPress={() => (usuario ? logout() : navigation.navigate("Login"))}
+                    >
                         <Text style={styles.botonTxt}>Ir a iniciar sesión</Text>
                     </Pressable>
                 </View>

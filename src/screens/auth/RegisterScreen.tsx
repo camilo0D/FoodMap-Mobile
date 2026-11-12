@@ -44,6 +44,10 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: spacing.lg }}>
+                    <Text style={styles.volver}>← Volver al inicio</Text>
+                </Pressable>
+
                 <Text style={styles.titulo}>Únete a FoodMap</Text>
                 <Text style={styles.sub}>Descubre restaurantes cerca de ti o muestra el tuyo.</Text>
 
@@ -76,8 +80,8 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
 
                 {!!errorGeneral && <Text style={styles.errorGeneral}>{errorGeneral}</Text>}
 
-                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: 16 }}>
-                    <Text style={{ color: colors.textMuted, fontWeight: "600" }}>← Volver al inicio</Text>
+                <Pressable style={styles.boton} onPress={handleSubmit(enviar)} disabled={isSubmitting}>
+                    {isSubmitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.botonTxt}>Crear mi cuenta</Text>}
                 </Pressable>
 
                 <View style={styles.pie}>
@@ -93,7 +97,8 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    scroll: { padding: spacing.xl, paddingTop: 40 },
+    scroll: { padding: spacing.xl },
+    volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     sub: { fontSize: 14, color: colors.textMuted, marginTop: 4 },
     tabs: { flexDirection: "row", backgroundColor: colors.surface, borderRadius: radius.pill, padding: 4, marginTop: spacing.xl },

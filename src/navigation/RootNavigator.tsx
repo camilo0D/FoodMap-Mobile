@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainTabs from "./MainTabs";
 import RestaurantDetailScreen from "../screens/RestaurantDetailScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
+import MyReviewsScreen from "../screens/MyReviewsScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
+import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 import SplashScreen from "../screens/SplashScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { useAuth } from "../context/AuthContext";
 import { prefs } from "../services/prefs";
 import type { RootStackParamList } from "./types";
-import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
-import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
-
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,12 +34,15 @@ export default function RootNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={onboardingVisto ? "Inicio" : "Onboarding"}
+            initialRouteName={usuario ? "Tabs" : onboardingVisto ? "Inicio" : "Onboarding"}
         >
             {usuario ? (
                 <>
                     <Stack.Screen name="Tabs" component={MainTabs} />
                     <Stack.Screen name="Detalle" component={RestaurantDetailScreen} />
+                    <Stack.Screen name="EditarPerfil" component={EditProfileScreen} />
+                    <Stack.Screen name="MisResenas" component={MyReviewsScreen} />
+                    <Stack.Screen name="Configuracion" component={SettingsScreen} />
                 </>
             ) : (
                 <>
@@ -45,10 +50,10 @@ export default function RootNavigator() {
                     <Stack.Screen name="Inicio" component={HomeScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen name="Registro" component={RegisterScreen} />
-                    <Stack.Screen name="RecuperarClave" component={ForgotPasswordScreen} />
-                    <Stack.Screen name="RestablecerClave" component={ResetPasswordScreen} />
                 </>
             )}
+            <Stack.Screen name="RecuperarClave" component={ForgotPasswordScreen} />
+            <Stack.Screen name="RestablecerClave" component={ResetPasswordScreen} />
         </Stack.Navigator>
     );
 }

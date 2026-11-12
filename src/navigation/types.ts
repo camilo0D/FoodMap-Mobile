@@ -5,8 +5,11 @@ export type RootStackParamList = {
     Inicio: undefined;
     Login: undefined;
     Registro: { tipo?: "usuario" | "restaurante" } | undefined;
-    Tabs: undefined;
-    Detalle: { restaurante: Restaurante; distanciaKm?: number | null };
     RecuperarClave: undefined;
     RestablecerClave: { email: string };
+    Tabs: undefined;
+    Detalle: { restaurante: Restaurante; distanciaKm?: number | null };
+    EditarPerfil: undefined;
+    MisResenas: undefined;
+    Configuracion: undefined;
 };
