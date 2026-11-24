@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainTabs from "./MainTabs";
 import OwnerTabs from "./OwnerTabs";
+import AdminScreen from "../screens/admin/AdminScreen";
 import RestaurantDetailScreen from "../screens/RestaurantDetailScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import MyReviewsScreen from "../screens/MyReviewsScreen";
@@ -35,7 +36,8 @@ export default function RootNavigator() {
     if (cargando || onboardingVisto === null || !splashTerminado) return <SplashScreen />;
 
     const roles = usuario?.roles ?? [];
-    const esDueno = roles.includes("restaurante") && !roles.includes("admin");
+    const esAdmin = roles.includes("admin");
+    const esDueno = roles.includes("restaurante");
 
     return (
         <Stack.Navigator
@@ -44,7 +46,7 @@ export default function RootNavigator() {
         >
             {usuario ? (
                 <>
-                    <Stack.Screen name="Tabs" component={esDueno ? OwnerTabs : MainTabs} />
+                    <Stack.Screen name="Tabs" component={esAdmin ? AdminScreen : esDueno ? OwnerTabs : MainTabs} />
                     <Stack.Screen name="Detalle" component={RestaurantDetailScreen} />
                     <Stack.Screen name="EditarPerfil" component={EditProfileScreen} />
                     <Stack.Screen name="MisResenas" component={MyReviewsScreen} />

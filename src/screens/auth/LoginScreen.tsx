@@ -23,10 +23,13 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
         try {
             await login(v.identificador.trim(), v.clave);
         } catch (e: any) {
+            const status = e?.response?.status;
             setErrorGeneral(
-                e?.response?.status === 401
+                status === 401
                     ? "Credenciales incorrectas. Revisa tu usuario y contraseña."
-                    : "No pudimos conectar con el servidor. Intenta de nuevo."
+                    : status === 403
+                        ? e?.response?.data?.error ?? "Tu cuenta no tiene acceso."
+                        : "No pudimos conectar con el servidor. Intenta de nuevo."
             );
         }
     };

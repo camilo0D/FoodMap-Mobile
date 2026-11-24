@@ -67,3 +67,30 @@ export type MiResena = {
 };
 
 export type Categoria = { id: string; nombre: string; icono: string };
+
+export type AdminUsuario = {
+    id: string;
+    username: string;
+    email: string;
+    estado: string;
+    roles: string[];
+    created_at: string;
+    is_active: boolean;
+};
+
+export type AdminRestaurante = {
+    id: string;
+    nombre: string;
+    direccion: string;
+    estado: string;
+    dueno_username: string | null;
+    calificacion_promedio: string;
+    total_calificaciones: number;
+    created_at: string;
+};
+
+export type AdminResumen = {
+    usuarios: { total: number; activos: number; suspendidos: number };
+    restaurantes: { total: number; activos: number; suspendidos: number };
+    resenas: { total: number };
+};
