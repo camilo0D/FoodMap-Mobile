@@ -65,3 +65,5 @@ export type MiResena = {
     created_at: string;
     restaurante: { id: string; nombre: string; imagen: string | null };
 };
+
+export type Categoria = { id: string; nombre: string; icono: string };

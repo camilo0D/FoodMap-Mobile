@@ -1,4 +1,4 @@
-import type { Restaurante } from "../types";
+import type { Plato, Restaurante } from "../types";
 
 export type RootStackParamList = {
     Onboarding: undefined;
@@ -12,4 +12,6 @@ export type RootStackParamList = {
     EditarPerfil: undefined;
     MisResenas: undefined;
     Configuracion: undefined;
+    EditarLocal: { restaurante?: Restaurante } | undefined;
+    EditarPlato: { restauranteId: string; plato?: Plato };
 };

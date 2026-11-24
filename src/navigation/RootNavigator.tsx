@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainTabs from "./MainTabs";
+import OwnerTabs from "./OwnerTabs";
 import RestaurantDetailScreen from "../screens/RestaurantDetailScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import MyReviewsScreen from "../screens/MyReviewsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import EditLocalScreen from "../screens/owner/EditLocalScreen";
+import PlatoFormScreen from "../screens/owner/PlatoFormScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
@@ -31,6 +34,9 @@ export default function RootNavigator() {
 
     if (cargando || onboardingVisto === null || !splashTerminado) return <SplashScreen />;
 
+    const roles = usuario?.roles ?? [];
+    const esDueno = roles.includes("restaurante") && !roles.includes("admin");
+
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
@@ -38,11 +44,13 @@ export default function RootNavigator() {
         >
             {usuario ? (
                 <>
-                    <Stack.Screen name="Tabs" component={MainTabs} />
+                    <Stack.Screen name="Tabs" component={esDueno ? OwnerTabs : MainTabs} />
                     <Stack.Screen name="Detalle" component={RestaurantDetailScreen} />
                     <Stack.Screen name="EditarPerfil" component={EditProfileScreen} />
                     <Stack.Screen name="MisResenas" component={MyReviewsScreen} />
                     <Stack.Screen name="Configuracion" component={SettingsScreen} />
+                    <Stack.Screen name="EditarLocal" component={EditLocalScreen} />
+                    <Stack.Screen name="EditarPlato" component={PlatoFormScreen} />
                 </>
             ) : (
                 <>
