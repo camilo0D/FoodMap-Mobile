@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Image, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import LocationPicker from "../../components/LocationPicker";
 import TextField from "../../components/TextField";
 import { useUserLocation } from "../../hooks/useUserLocation";
 import { elegirFoto, FotoElegida } from "../../services/files";
@@ -14,6 +15,11 @@ import { colors, radius, spacing } from "../../theme";
 import type { Categoria, Restaurante } from "../../types";
 
 const FORMATO_HORA = /^(\d{1,2}:\d{2}-\d{1,2}:\d{2}|cerrado)$/i;
+
+const aNumero = (v: string): number | null => {
+    const n = Number(v.replace(",", "."));
+    return v.trim() !== "" && !Number.isNaN(n) && Math.abs(n) <= 180 ? n : null;
+};
 
 export default function EditLocalScreen() {
     const navigation = useNavigation<any>();
@@ -38,12 +44,17 @@ export default function EditLocalScreen() {
         getCategorias().then(setCategorias).catch(() => { });
     }, []);
 
+    const latNum = aNumero(lat);
+    const lngNum = aNumero(lng);
+
+    const ponerPin = (la: number, lo: number) => {
+        setLat(la.toFixed(6));
+        setLng(lo.toFixed(6));
+    };
+
     const usarMiUbicacion = async () => {
         const c = await solicitar();
-        if (c) {
-            setLat(c.lat.toFixed(6));
-            setLng(c.lng.toFixed(6));
-        }
+        if (c) ponerPin(c.lat, c.lng);
     };
 
     const copiarLunes = () => {
@@ -55,10 +66,8 @@ export default function EditLocalScreen() {
     const guardar = async () => {
         setError(null);
         if (nombre.trim().length < 2) return setError("Escribe el nombre de tu restaurante.");
-        const la = Number(lat.replace(",", "."));
-        const lo = Number(lng.replace(",", "."));
-        if (!lat || !lng || Number.isNaN(la) || Number.isNaN(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180) {
-            return setError("Escribe una ubicación válida (latitud y longitud) o usa tu ubicación actual.");
+        if (latNum == null || lngNum == null || Math.abs(latNum) > 90) {
+            return setError("Marca la ubicación en el mapa o escribe una latitud y longitud válidas.");
         }
         for (const d of DIAS_ORDEN) {
             const v = (horario[d] ?? "").trim();
@@ -71,7 +80,7 @@ export default function EditLocalScreen() {
             );
             const datos: DatosLocal = {
                 nombre: nombre.trim(), descripcion: descripcion.trim(), telefono: telefono.trim(),
-                direccion: direccion.trim(), latitud: la.toFixed(6), longitud: lo.toFixed(6),
+                direccion: direccion.trim(), latitud: latNum.toFixed(6), longitud: lngNum.toFixed(6),
                 categoria_id: categoriaId, horario: horarioLimpio,
             };
             if (foto) datos.imagen = await subirImagenLocal(foto);
@@ -132,6 +141,10 @@ export default function EditLocalScreen() {
 
                 <View style={{ gap: 8 }}>
                     <Text style={styles.label}>Ubicación en el mapa</Text>
+                    <LocationPicker lat={latNum} lng={lngNum} onChange={ponerPin} />
+                    <Text style={styles.ayuda}>
+                        {Platform.OS === "web" ? "Toca el mapa o arrastra el pin hasta tu local." : "Toca el mapa para colocar el pin en tu local."}
+                    </Text>
                     <View style={{ flexDirection: "row", gap: spacing.sm }}>
                         <View style={{ flex: 1 }}>
                             <TextField label="Latitud" icono="navigate-outline" placeholder="3.8801" keyboardType="numbers-and-punctuation" value={lat} onChangeText={setLat} />
@@ -144,8 +157,7 @@ export default function EditLocalScreen() {
                         <Ionicons name="locate" size={18} color={colors.primary} />
                         <Text style={styles.btnSecTxt}>Usar mi ubicación actual</Text>
                     </Pressable>
-                    {estadoUb === "denegada" && <Text style={styles.error}>No pudimos acceder a tu ubicación. Escríbela a mano.</Text>}
-                    <Text style={styles.ayuda}>Primero la latitud y después la longitud. Si las inviertes, el marcador aparece en otro país.</Text>
+                    {estadoUb === "denegada" && <Text style={styles.error}>No pudimos acceder a tu ubicación. Toca el mapa para marcarla.</Text>}
                 </View>
 
                 <View style={{ gap: 8 }}>
