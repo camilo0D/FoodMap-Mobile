@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import GoogleSection from "../../components/GoogleSection";
 import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
 import { registerRestaurant, registerUser } from "../../services/auth";
@@ -58,6 +59,8 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
                         </Pressable>
                     ))}
                 </View>
+
+                <GoogleSection tipo={tipo} />
 
                 <View style={{ gap: spacing.lg, marginTop: spacing.lg }}>
                     <Controller control={control} name="username" render={({ field: { onChange, value } }) => (

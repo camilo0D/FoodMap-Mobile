@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import GoogleSection from "../../components/GoogleSection";
 import Logo from "../../components/Logo";
 import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
@@ -46,7 +47,9 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
                 <Text style={styles.titulo}>Bienvenido de nuevo</Text>
                 <Text style={styles.sub}>Inicia sesión en tu cuenta de FoodMap.</Text>
 
-                <View style={{ gap: spacing.lg, marginTop: spacing.xl }}>
+                <GoogleSection />
+
+                <View style={{ gap: spacing.lg, marginTop: spacing.lg }}>
                     <Controller
                         control={control}
                         name="identificador"

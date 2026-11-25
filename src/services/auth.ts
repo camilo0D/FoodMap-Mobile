@@ -8,6 +8,12 @@ export async function login(username: string, password: string) {
     return data.user;
 }
 
+export async function loginConGoogle(idToken: string, tipo?: "usuario" | "restaurante") {
+    const { data } = await api.post<LoginResponse>("/auth/google/", { id_token: idToken, tipo });
+    await tokenStorage.saveSession(data.access, data.refresh, data.user);
+    return data.user;
+}
+
 export const registerUser = (username: string, email: string, password: string) =>
     api.post("/auth/register/", { username, email, password });
 

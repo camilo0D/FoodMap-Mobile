@@ -8,6 +8,7 @@ type AuthState = {
     usuario: Usuario | null;
     cargando: boolean;
     login: (identificador: string, clave: string) => Promise<Usuario>;
+    loginGoogle: (idToken: string, tipo?: "usuario" | "restaurante") => Promise<Usuario>;
     logout: () => Promise<void>;
 };
 
@@ -40,6 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return u;
     };
 
+    const loginGoogle = async (idToken: string, tipo?: "usuario" | "restaurante") => {
+        const u = await authService.loginConGoogle(idToken, tipo);
+        setUsuario(u);
+        return u;
+    };
+
     const logout = async () => {
         try {
             await authService.logout();
@@ -51,5 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    return <AuthContext.Provider value={{ usuario, cargando, login, logout }}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ usuario, cargando, login, loginGoogle, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
