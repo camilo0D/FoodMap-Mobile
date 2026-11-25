@@ -94,3 +94,7 @@ export type AdminResumen = {
     restaurantes: { total: number; activos: number; suspendidos: number };
     resenas: { total: number };
 };
+
+export type AdminCategoria = { id: string; nombre: string; icono: string; restaurantes: number };
+
+export type AdminRol = { id: string; nombre: string; permisos: Record<string, unknown>; usuarios: number };
