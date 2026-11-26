@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getMiRestaurante } from "../../services/owner";
 import { getMenu, getResenas } from "../../services/restaurant";
 import { estadoAbierto } from "../../utils/horario";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { Restaurante } from "../../types";
+import MiLocalMapa from "../../components/MiLocalMapa";
 
 function completitud(r: Restaurante, platos: number) {
     const pasos = [
@@ -20,6 +21,8 @@ function completitud(r: Restaurante, platos: number) {
 }
 
 export default function OwnerHomeScreen() {
+    const styles = useStyles();
+    const colors = useColors();
     const navigation = useNavigation<any>();
     const [cargando, setCargando] = useState(true);
     const [r, setR] = useState<Restaurante | null>(null);
@@ -92,7 +95,7 @@ export default function OwnerHomeScreen() {
                     {r.imagen ? (
                         <Image source={{ uri: r.imagen }} style={styles.foto} />
                     ) : (
-                        <View style={[styles.foto, { backgroundColor: "#F3E4D6", alignItems: "center", justifyContent: "center" }]}>
+                        <View style={[styles.foto, { backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" }]}>
                             <Ionicons name="restaurant" size={40} color={colors.primary} />
                         </View>
                     )}
@@ -120,6 +123,12 @@ export default function OwnerHomeScreen() {
                     </View>
                 </View>
 
+                <Text style={styles.seccion}>Mi ubicación</Text>
+                <MiLocalMapa restaurante={r} />
+                <Pressable onPress={() => navigation.navigate("EditarLocal", { restaurante: r })}>
+                    <Text style={styles.link}>Cambiar ubicación</Text>
+                </Pressable>
+
                 <View style={styles.card}>
                     <View style={{ padding: spacing.lg, gap: 8 }}>
                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -144,11 +153,13 @@ export default function OwnerHomeScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     centro: { alignItems: "center", justifyContent: "center", padding: spacing.xl, gap: spacing.sm },
-    icono: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#FBE3D3", alignItems: "center", justifyContent: "center" },
+    icono: { width: 72, height: 72, borderRadius: 36, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
+    seccion: { fontSize: 17, fontWeight: "800", color: colors.text },
+    link: { color: colors.primary, fontWeight: "700", textAlign: "center" },
     vacioTitulo: { fontSize: 20, fontWeight: "800", color: colors.text, marginTop: spacing.sm },
     vacioTexto: { fontSize: 14, color: colors.textMuted, textAlign: "center", maxWidth: 280 },
     card: { backgroundColor: colors.surface, borderRadius: radius.lg, overflow: "hidden" },
@@ -165,4 +176,4 @@ const styles = StyleSheet.create({
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
     btnSec: { borderWidth: 1.5, borderColor: colors.primary, borderRadius: radius.md, paddingVertical: 13, alignItems: "center" },
     btnSecTxt: { color: colors.primary, fontWeight: "700" },
-});
+}));

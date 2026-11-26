@@ -5,7 +5,7 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import {
     actualizarCategoria, crearCategoria, eliminarCategoria, getCategoriasAdmin,
 } from "../../services/admin";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { AdminCategoria } from "../../types";
 
 function FormCategoria({ inicial, onSave, onCancel }: {
@@ -13,6 +13,8 @@ function FormCategoria({ inicial, onSave, onCancel }: {
     onSave: (nombre: string, icono: string) => Promise<string | null>;
     onCancel: () => void;
 }) {
+  const styles = useStyles();
+  const colors = useColors();
     const [nombre, setNombre] = useState(inicial?.nombre ?? "");
     const [icono, setIcono] = useState(inicial?.icono ?? "");
     const [error, setError] = useState<string | null>(null);
@@ -47,6 +49,8 @@ function FormCategoria({ inicial, onSave, onCancel }: {
 }
 
 export default function AdminCategorias() {
+  const styles = useStyles();
+  const colors = useColors();
     const [lista, setLista] = useState<AdminCategoria[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [form, setForm] = useState<{ cat?: AdminCategoria } | null>(null);
@@ -133,14 +137,14 @@ export default function AdminCategorias() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     titulo: { fontSize: 24, fontWeight: "800", color: colors.text },
     sub: { fontSize: 12, color: colors.textMuted },
     nueva: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 9 },
     nuevaTxt: { color: "#fff", fontWeight: "700", fontSize: 13 },
     error: { color: "#B3261E", fontSize: 13 },
     fila: { flexDirection: "row", alignItems: "center", gap: spacing.md, backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md },
-    icono: { width: 42, height: 42, borderRadius: 21, backgroundColor: "#FBE3D3", alignItems: "center", justifyContent: "center" },
+    icono: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     nombre: { fontSize: 15, fontWeight: "700", color: colors.text },
     overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center", padding: spacing.xl },
     caja: { width: "100%", backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.xl, gap: spacing.sm },
@@ -149,4 +153,4 @@ const styles = StyleSheet.create({
     input: { height: 46, backgroundColor: colors.background, borderRadius: radius.md, paddingHorizontal: spacing.md, color: colors.text, outlineStyle: "none" } as any,
     guardar: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 13, alignItems: "center", marginTop: spacing.sm },
     guardarTxt: { color: "#fff", fontWeight: "700" },
-});
+}));

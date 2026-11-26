@@ -7,10 +7,12 @@ import { useNavigation } from "@react-navigation/native";
 import Avatar from "../components/Avatar";
 import TextField from "../components/TextField";
 import { actualizarPerfil, FotoElegida, getPerfil } from "../services/profile";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { Perfil } from "../types";
 
 export default function EditProfileScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const [perfil, setPerfil] = useState<Perfil | null>(null);
     const [nombre, setNombre] = useState("");
@@ -90,7 +92,7 @@ export default function EditProfileScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 26, fontWeight: "800", color: colors.text },
@@ -110,4 +112,4 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13, marginTop: spacing.md },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15, alignItems: "center", marginTop: spacing.xl },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));

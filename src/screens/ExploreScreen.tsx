@@ -9,12 +9,14 @@ import FilterSheet, { Filtros, FILTROS_VACIOS } from "../components/FilterSheet"
 import { useRestaurantes } from "../hooks/useRestaurantes";
 import { useUserLocation } from "../hooks/useUserLocation";
 import { distanciaKm } from "../utils/geo";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { RootStackParamList } from "../navigation/types";
 
 type Orden = "rating" | "cerca";
 
 export default function ExploreScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { restaurantes, estado, recargar } = useRestaurantes();
     const { ubicacion, estado: estadoUb, solicitar } = useUserLocation();
@@ -179,7 +181,7 @@ export default function ExploreScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     busquedaFila: { flexDirection: "row", gap: spacing.sm },
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     },
     input: { flex: 1, color: colors.text, fontSize: 14, outlineStyle: "none" } as any,
     filtroBtn: { width: 46, height: 46, borderRadius: radius.md, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" },
-    punto: { position: "absolute", top: 8, right: 8, width: 9, height: 9, borderRadius: 5, backgroundColor: "#fff", borderWidth: 2, borderColor: colors.primary },
+    punto: { position: "absolute", top: 8, right: 8, width: 9, height: 9, borderRadius: 5, backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.primary },
     chip: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 },
     chipActivo: { backgroundColor: colors.primary },
     chipTxt: { color: colors.text, fontSize: 13, fontWeight: "600" },
@@ -202,4 +204,4 @@ const styles = StyleSheet.create({
     vacio: { alignItems: "center", gap: spacing.sm, padding: spacing.xl },
     vacioTitulo: { fontSize: 15, fontWeight: "700", color: colors.text, textAlign: "center" },
     vacioLink: { color: colors.primary, fontWeight: "700" },
-});
+}));

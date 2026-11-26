@@ -1,12 +1,13 @@
 import { Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useFavorites } from "../context/FavoritesContext";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 import type { Restaurante } from "../types";
 
 type Props = { restaurante: Restaurante; size?: number; flotante?: boolean };
 
 export default function FavoriteButton({ restaurante, size = 20, flotante }: Props) {
+  const colors = useColors();
     const { esFavorito, toggle } = useFavorites();
     const activo = esFavorito(restaurante.id);
     const caja = size + 16;
@@ -17,7 +18,7 @@ export default function FavoriteButton({ restaurante, size = 20, flotante }: Pro
             hitSlop={8}
             style={
                 flotante
-                    ? { width: caja, height: caja, borderRadius: caja / 2, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", elevation: 3 }
+                    ? { width: caja, height: caja, borderRadius: caja / 2, backgroundColor: colors.surface, alignItems: "center", justifyContent: "center", elevation: 3 }
                     : undefined
             }
         >

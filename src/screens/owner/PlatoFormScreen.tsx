@@ -6,10 +6,12 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import TextField from "../../components/TextField";
 import { elegirFoto, FotoElegida } from "../../services/files";
 import { guardarPlato } from "../../services/owner";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { Plato } from "../../types";
 
 export default function PlatoFormScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
     const { restauranteId, plato }: { restauranteId: string; plato?: Plato } = route.params;
@@ -54,7 +56,7 @@ export default function PlatoFormScreen() {
                     {foto?.uri || plato?.imagen ? (
                         <Image source={{ uri: foto?.uri ?? plato?.imagen ?? undefined }} style={styles.foto} />
                     ) : (
-                        <View style={[styles.foto, { alignItems: "center", justifyContent: "center", backgroundColor: "#F3E4D6" }]}>
+                        <View style={[styles.foto, { alignItems: "center", justifyContent: "center", backgroundColor: colors.primarySoft }]}>
                             <Ionicons name="camera-outline" size={32} color={colors.primary} />
                         </View>
                     )}
@@ -83,7 +85,7 @@ export default function PlatoFormScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 26, fontWeight: "800", color: colors.text },
@@ -97,4 +99,4 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13 },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15, alignItems: "center", marginBottom: spacing.xl },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));

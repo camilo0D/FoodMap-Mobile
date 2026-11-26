@@ -7,10 +7,12 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import Stars from "../components/Stars";
 import { borrarResena, getMisResenas } from "../services/profile";
 import { fechaCorta } from "../utils/format";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { MiResena } from "../types";
 
 export default function MyReviewsScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const [resenas, setResenas] = useState<MiResena[] | null>(null);
     const [error, setError] = useState(false);
@@ -94,7 +96,7 @@ export default function MyReviewsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 26, fontWeight: "800", color: colors.text },
@@ -106,4 +108,4 @@ const styles = StyleSheet.create({
     vacio: { flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.sm, paddingBottom: 80 },
     vacioTitulo: { fontSize: 16, fontWeight: "700", color: colors.text },
     vacioTexto: { fontSize: 13, color: colors.textMuted, textAlign: "center" },
-});
+}));

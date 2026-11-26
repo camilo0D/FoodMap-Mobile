@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getRolesAdmin } from "../../services/admin";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { AdminRol } from "../../types";
 
 const etiqueta = (clave: string) => {
@@ -11,6 +11,8 @@ const etiqueta = (clave: string) => {
 };
 
 export default function AdminRoles() {
+  const styles = useStyles();
+  const colors = useColors();
     const [roles, setRoles] = useState<AdminRol[] | null>(null);
     const [error, setError] = useState(false);
     const [refrescando, setRefrescando] = useState(false);
@@ -69,14 +71,14 @@ export default function AdminRoles() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     titulo: { fontSize: 24, fontWeight: "800", color: colors.text },
     sub: { fontSize: 12, color: colors.textMuted },
     card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md },
     nombre: { fontSize: 18, fontWeight: "800", color: colors.text, textTransform: "capitalize" },
-    cuenta: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "#FBE3D3", borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
+    cuenta: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: colors.primarySoft, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
     cuentaTxt: { fontSize: 12, fontWeight: "700", color: colors.primary },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
     chip: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "#E3F5E8", borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },
     chipTxt: { fontSize: 12, fontWeight: "600", color: "#1F7A44" },
-});
+}));

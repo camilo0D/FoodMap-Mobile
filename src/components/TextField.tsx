@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 type Props = TextInputProps & {
     label: string;
@@ -11,6 +11,8 @@ type Props = TextInputProps & {
 };
 
 export default function TextField({ label, icono, error, secure, ...rest }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const [oculto, setOculto] = useState(!!secure);
     return (
         <View style={{ gap: 6 }}>
@@ -35,7 +37,7 @@ export default function TextField({ label, icono, error, secure, ...rest }: Prop
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     label: { fontSize: 13, fontWeight: "600", color: colors.text },
     caja: {
         flexDirection: "row", alignItems: "center", gap: spacing.sm, backgroundColor: colors.surface,
@@ -44,4 +46,4 @@ const styles = StyleSheet.create({
     cajaError: { borderColor: "#B3261E" },
     input: { flex: 1, color: colors.text, fontSize: 15, outlineStyle: "none" } as any,
     error: { color: "#B3261E", fontSize: 12 },
-});
+}));

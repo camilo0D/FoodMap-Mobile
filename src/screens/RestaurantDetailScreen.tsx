@@ -8,7 +8,7 @@ import ReviewForm from "../components/ReviewForm";
 import { getMenu, getResenas } from "../services/restaurant";
 import { DIAS_ORDEN, ETIQUETA_DIA, diaActual, estadoAbierto } from "../utils/horario";
 import { fechaCorta, precioCOP } from "../utils/format";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { RootStackParamList } from "../navigation/types";
 import type { Plato, Resena } from "../types";
 import FavoriteButton from "../components/FavoriteButton";
@@ -17,6 +17,8 @@ type Props = NativeStackScreenProps<RootStackParamList, "Detalle">;
 type Tab = "info" | "menu" | "resenas";
 
 export default function RestaurantDetailScreen({ route, navigation }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const { restaurante: r, distanciaKm } = route.params;
     const insets = useSafeAreaInsets();
     const [tab, setTab] = useState<Tab>("info");
@@ -196,10 +198,10 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     portada: { width: "100%", height: 250 },
-    sinFoto: { backgroundColor: "#F3E4D6", alignItems: "center", justifyContent: "center" },
+    sinFoto: { backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     atras: {
         position: "absolute", left: spacing.lg, width: 40, height: 40, borderRadius: 20,
         backgroundColor: colors.surface, alignItems: "center", justifyContent: "center", elevation: 4,
@@ -249,4 +251,4 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15,
     },
     btnPrincipalTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));

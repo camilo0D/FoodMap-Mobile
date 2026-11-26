@@ -9,10 +9,12 @@ import Logo from "../../components/Logo";
 import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
 import { LoginForm, loginSchema } from "../../schemas/auth";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
 export default function LoginScreen({ navigation }: NativeStackScreenProps<RootStackParamList, "Login">) {
+  const styles = useStyles();
+  const colors = useColors();
     const { login } = useAuth();
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const {
@@ -93,7 +95,7 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl, paddingTop: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
@@ -108,4 +110,4 @@ const styles = StyleSheet.create({
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
     pie: { flexDirection: "row", justifyContent: "center", marginTop: spacing.xl },
     link: { color: colors.primary, fontWeight: "700", marginTop: 4 },
-});
+}));

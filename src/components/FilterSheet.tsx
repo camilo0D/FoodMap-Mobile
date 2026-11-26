@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 export type Filtros = { distanciaKm: number | null; minRating: number | null };
 export const FILTROS_VACIOS: Filtros = { distanciaKm: null, minRating: null };
@@ -15,6 +15,8 @@ type Props = {
 function Opcion({ texto, activo, deshabilitado, onPress }: {
     texto: string; activo: boolean; deshabilitado?: boolean; onPress: () => void;
 }) {
+  const styles = useStyles();
+  const colors = useColors();
     return (
         <Pressable
             onPress={onPress}
@@ -27,6 +29,8 @@ function Opcion({ texto, activo, deshabilitado, onPress }: {
 }
 
 export default function FilterSheet({ valor, ubicacionActiva, onApply, onClose }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const [b, setB] = useState<Filtros>(valor);
 
     return (
@@ -74,7 +78,7 @@ export default function FilterSheet({ valor, ubicacionActiva, onApply, onClose }
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.35)", justifyContent: "flex-end" },
     sheet: {
         backgroundColor: colors.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24,
@@ -92,4 +96,4 @@ const styles = StyleSheet.create({
     aplicarTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
     limpiar: { paddingVertical: 10, alignItems: "center" },
     limpiarTxt: { color: colors.primary, fontWeight: "700" },
-});
+}));

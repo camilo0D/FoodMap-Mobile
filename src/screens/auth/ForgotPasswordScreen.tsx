@@ -8,12 +8,14 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import TextField from "../../components/TextField";
 import { solicitarCodigo } from "../../services/auth";
 import { RecuperarForm, recuperarSchema } from "../../schemas/auth";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
 export default function ForgotPasswordScreen({
     navigation,
 }: NativeStackScreenProps<RootStackParamList, "RecuperarClave">) {
+  const styles = useStyles();
+  const colors = useColors();
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const {
         control, handleSubmit, formState: { errors, isSubmitting },
@@ -72,7 +74,7 @@ export default function ForgotPasswordScreen({
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
@@ -82,4 +84,4 @@ const styles = StyleSheet.create({
     errorGeneral: { color: "#B3261E", fontSize: 13, marginTop: spacing.md },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15, alignItems: "center", marginTop: spacing.xl },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));

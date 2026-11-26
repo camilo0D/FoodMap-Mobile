@@ -2,12 +2,14 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import FavoriteButton from "./FavoriteButton";
 import { estadoAbierto } from "../utils/horario";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { Restaurante } from "../types";
 
 type Props = { restaurante: Restaurante; distanciaKm?: number | null; onPress: () => void };
 
 export default function RestaurantListItem({ restaurante: r, distanciaKm, onPress }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const estado = estadoAbierto(r.horario);
     return (
         <Pressable style={styles.card} onPress={onPress}>
@@ -48,13 +50,13 @@ export default function RestaurantListItem({ restaurante: r, distanciaKm, onPres
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     card: { backgroundColor: colors.surface, borderRadius: radius.lg, overflow: "hidden", elevation: 2 },
     foto: { width: "100%", height: 150 },
-    sinFoto: { backgroundColor: "#F3E4D6", alignItems: "center", justifyContent: "center" },
+    sinFoto: { backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     rating: {
         position: "absolute", top: 10, right: 10, flexDirection: "row", alignItems: "center", gap: 4,
-        backgroundColor: "#fff", borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 4,
+        backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 4,
     },
     ratingTxt: { fontSize: 12, fontWeight: "700", color: colors.text },
     corazon: { position: "absolute", top: 10, left: 10 },
@@ -66,4 +68,4 @@ const styles = StyleSheet.create({
     info: { padding: spacing.md, gap: 3 },
     nombre: { fontSize: 16, fontWeight: "700", color: colors.text },
     detalle: { fontSize: 12, color: colors.textMuted },
-});
+}));

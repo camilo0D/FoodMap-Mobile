@@ -1,10 +1,11 @@
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 
 type Props = { valor: number; size?: number; onChange?: (n: number) => void };
 
 export default function Stars({ valor, size = 16, onChange }: Props) {
+  const colors = useColors();
     return (
         <View style={{ flexDirection: "row", gap: 2 }}>
             {[1, 2, 3, 4, 5].map((n) => (

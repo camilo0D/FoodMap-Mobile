@@ -5,7 +5,7 @@ import OwnerMenuScreen from "../screens/owner/OwnerMenuScreen";
 import OwnerReviewsScreen from "../screens/owner/OwnerReviewsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +17,7 @@ const iconos: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionic
 };
 
 export default function OwnerTabs() {
+  const colors = useColors();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({

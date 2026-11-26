@@ -8,12 +8,14 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { getPerfil } from "../services/profile";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { Perfil } from "../types";
 
 function Item({ icono, titulo, detalle, onPress }: {
     icono: keyof typeof Ionicons.glyphMap; titulo: string; detalle?: string; onPress: () => void;
 }) {
+  const styles = useStyles();
+  const colors = useColors();
     return (
         <Pressable style={styles.item} onPress={onPress}>
             <View style={styles.iconoCaja}>
@@ -27,6 +29,8 @@ function Item({ icono, titulo, detalle, onPress }: {
 }
 
 export default function ProfileScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const { usuario, logout } = useAuth();
     const { favoritos } = useFavorites();
@@ -83,20 +87,20 @@ export default function ProfileScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     cabecera: { alignItems: "center", gap: 4 },
     nombre: { fontSize: 22, fontWeight: "800", color: colors.text, marginTop: spacing.md },
     correo: { color: colors.textMuted, fontSize: 14 },
-    rol: { backgroundColor: "#FBE3D3", borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 4, marginTop: 6 },
+    rol: { backgroundColor: colors.primarySoft, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 4, marginTop: 6 },
     rolTxt: { color: colors.primary, fontWeight: "700", fontSize: 12, textTransform: "capitalize" },
     bio: { color: colors.text, textAlign: "center", marginTop: spacing.sm, lineHeight: 20 },
     grupo: { backgroundColor: colors.surface, borderRadius: radius.lg, overflow: "hidden" },
     item: { flexDirection: "row", alignItems: "center", gap: spacing.md, padding: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
-    iconoCaja: { width: 36, height: 36, borderRadius: 18, backgroundColor: "#FBE3D3", alignItems: "center", justifyContent: "center" },
+    iconoCaja: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     itemTitulo: { flex: 1, fontSize: 15, fontWeight: "600", color: colors.text },
     itemDetalle: { color: colors.textMuted, fontWeight: "600" },
     salir: { flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderRadius: radius.md, paddingVertical: 14 },
     salirTxt: { color: "#B3261E", fontWeight: "700" },
-});
+}));

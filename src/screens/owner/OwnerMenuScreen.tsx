@@ -7,10 +7,12 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import { borrarPlato, cambiarDisponible, getMiRestaurante } from "../../services/owner";
 import { getMenu } from "../../services/restaurant";
 import { precioCOP } from "../../utils/format";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { Plato, Restaurante } from "../../types";
 
 export default function OwnerMenuScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const [r, setR] = useState<Restaurante | null>(null);
     const [platos, setPlatos] = useState<Plato[] | null>(null);
@@ -121,7 +123,7 @@ export default function OwnerMenuScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text, marginBottom: spacing.sm },
     card: { flexDirection: "row", gap: spacing.md, backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md },
@@ -136,4 +138,4 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: 18, paddingVertical: 14, elevation: 6,
     },
     fabTxt: { color: "#fff", fontWeight: "700" },
-});
+}));

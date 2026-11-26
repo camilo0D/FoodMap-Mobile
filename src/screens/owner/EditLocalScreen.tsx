@@ -11,7 +11,7 @@ import {
     actualizarRestaurante, crearRestaurante, DatosLocal, getCategorias, subirImagenLocal,
 } from "../../services/owner";
 import { DIAS_ORDEN, ETIQUETA_DIA } from "../../utils/horario";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { Categoria, Restaurante } from "../../types";
 
 const FORMATO_HORA = /^(\d{1,2}:\d{2}-\d{1,2}:\d{2}|cerrado)$/i;
@@ -22,6 +22,8 @@ const aNumero = (v: string): number | null => {
 };
 
 export default function EditLocalScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
     const r: Restaurante | undefined = route.params?.restaurante;
@@ -108,7 +110,7 @@ export default function EditLocalScreen() {
                     {foto?.uri || r?.imagen ? (
                         <Image source={{ uri: foto?.uri ?? r?.imagen ?? undefined }} style={styles.foto} />
                     ) : (
-                        <View style={[styles.foto, { alignItems: "center", justifyContent: "center", backgroundColor: "#F3E4D6" }]}>
+                        <View style={[styles.foto, { alignItems: "center", justifyContent: "center", backgroundColor: colors.primarySoft }]}>
                             <Ionicons name="camera-outline" size={32} color={colors.primary} />
                         </View>
                     )}
@@ -192,7 +194,7 @@ export default function EditLocalScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 26, fontWeight: "800", color: colors.text },
@@ -220,4 +222,4 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13 },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15, alignItems: "center", marginTop: spacing.sm, marginBottom: spacing.xl },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));

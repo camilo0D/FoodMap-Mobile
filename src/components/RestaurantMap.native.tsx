@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { Map, Camera, Marker } from "@maplibre/maplibre-react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../theme";
+import { themed, useColors } from "../theme";
 import type { Restaurante } from "../types";
 import type { Coord } from "../utils/geo";
 
@@ -28,6 +28,8 @@ type Props = {
 };
 
 export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, ubicacion, centerSignal }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const cameraRef = useRef<any>(null);
 
     useEffect(() => {
@@ -60,11 +62,11 @@ export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, 
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     pin: {
         width: 30, height: 30, borderRadius: 15, backgroundColor: colors.primary,
         borderWidth: 2, borderColor: "#fff", alignItems: "center", justifyContent: "center",
     },
     pinActivo: { width: 38, height: 38, borderRadius: 19, backgroundColor: "#D83A1B" },
     yo: { width: 18, height: 18, borderRadius: 9, backgroundColor: "#2F7CF6", borderWidth: 3, borderColor: "#fff" },
-});
+}));

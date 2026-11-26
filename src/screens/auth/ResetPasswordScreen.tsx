@@ -9,12 +9,14 @@ import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
 import { restablecerClave, solicitarCodigo } from "../../services/auth";
 import { RestablecerForm, restablecerSchema } from "../../schemas/auth";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
 export default function ResetPasswordScreen({
     navigation, route,
 }: NativeStackScreenProps<RootStackParamList, "RestablecerClave">) {
+  const styles = useStyles();
+  const colors = useColors();
     const { email } = route.params;
     const { usuario, logout } = useAuth();
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
@@ -118,7 +120,7 @@ export default function ResetPasswordScreen({
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
@@ -130,4 +132,4 @@ const styles = StyleSheet.create({
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 15, alignItems: "center", marginTop: spacing.xl },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
     link: { color: colors.primary, fontWeight: "700" },
-});
+}));

@@ -1,7 +1,8 @@
 import { Text, View } from "react-native";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 
 function Placeholder({ titulo, nota }: { titulo: string; nota: string }) {
+  const colors = useColors();
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.background }}>
             <Text style={{ fontSize: 22, fontWeight: "700", color: colors.text }}>{titulo}</Text>

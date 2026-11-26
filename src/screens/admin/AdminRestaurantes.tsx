@@ -5,7 +5,7 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import EstadoBadge from "../../components/EstadoBadge";
 import Paginador from "../../components/Paginador";
 import { cambiarEstadoRestaurante, eliminarRestauranteAdmin, getRestaurantesAdmin } from "../../services/admin";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { AdminRestaurante } from "../../types";
 
 const POR_PAGINA = 6;
@@ -22,6 +22,8 @@ function textoDialogo(a: Accion) {
 }
 
 export default function AdminRestaurantes() {
+  const styles = useStyles();
+  const colors = useColors();
     const [lista, setLista] = useState<AdminRestaurante[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [busqueda, setBusqueda] = useState("");
@@ -144,7 +146,7 @@ export default function AdminRestaurantes() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     titulo: { fontSize: 24, fontWeight: "800", color: colors.text },
     sub: { fontSize: 12, color: colors.textMuted },
     busqueda: { flexDirection: "row", alignItems: "center", gap: spacing.sm, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.lg, height: 44 },
@@ -155,9 +157,9 @@ const styles = StyleSheet.create({
     chipTxt: { fontSize: 13, fontWeight: "600", color: colors.text },
     error: { color: "#B3261E", fontSize: 13 },
     fila: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md, gap: spacing.md },
-    icono: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#FBE3D3", alignItems: "center", justifyContent: "center" },
+    icono: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     nombre: { fontSize: 15, fontWeight: "700", color: colors.text },
     pie: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderTopWidth: 1, borderTopColor: colors.border, paddingTop: spacing.sm },
     accion: { color: colors.primary, fontWeight: "700", fontSize: 13 },
     accionRoja: { color: "#B3261E", fontWeight: "700", fontSize: 13 },
-});
+}));

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "../../components/Avatar";
 import ConfirmDialog from "../../components/ConfirmDialog";
@@ -7,11 +7,13 @@ import EstadoBadge from "../../components/EstadoBadge";
 import Paginador from "../../components/Paginador";
 import { useAuth } from "../../context/AuthContext";
 import { cambiarEstadoUsuario, eliminarUsuario, getUsuariosAdmin } from "../../services/admin";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { AdminUsuario } from "../../types";
+import RolesSheet from "./RolesSheet";
 
 const POR_PAGINA = 6;
 const ESTADOS = [["todos", "Todos"], ["activo", "Activos"], ["inactivo", "Inactivos"], ["suspendido", "Suspendidos"]] as const;
+const ETIQUETA_ROL: Record<string, string> = { usuario: "Comensal", restaurante: "Dueño", admin: "Admin" };
 
 type Accion = { tipo: "suspender" | "activar" | "eliminar"; u: AdminUsuario };
 
@@ -25,6 +27,8 @@ function textoDialogo(a: Accion) {
 }
 
 export default function AdminUsuarios() {
+    const styles = useStyles();
+    const colors = useColors();
     const { usuario: yo } = useAuth();
     const [lista, setLista] = useState<AdminUsuario[] | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -32,7 +36,9 @@ export default function AdminUsuarios() {
     const [estado, setEstado] = useState<string>("todos");
     const [pagina, setPagina] = useState(1);
     const [accion, setAccion] = useState<Accion | null>(null);
+    const [rolesDe, setRolesDe] = useState<AdminUsuario | null>(null);
     const [refrescando, setRefrescando] = useState(false);
+    const [aviso, setAviso] = useState<string | null>(null);
 
     const cargar = useCallback(async () => {
         try { setLista(await getUsuariosAdmin()); setError(null); } catch { setError("No pudimos cargar los usuarios."); }
@@ -63,15 +69,18 @@ export default function AdminUsuarios() {
         try {
             if (tipo === "eliminar") {
                 await eliminarUsuario(u.id);
-                setLista((p) => p?.filter((x) => x.id !== u.id) ?? null);
+                setAviso(`${u.username} fue eliminado.`);
             } else {
                 const nuevo = tipo === "suspender" ? "suspendido" : "activo";
                 await cambiarEstadoUsuario(u.id, nuevo);
-                setLista((p) => p?.map((x) => (x.id === u.id ? { ...x, estado: nuevo } : x)) ?? null);
+                setAviso(tipo === "suspender" ? `${u.username} fue suspendido y ya no puede iniciar sesión.` : `${u.username} fue reactivado.`);
             }
             setError(null);
-        } catch {
-            setError("No pudimos completar la acción. Intenta de nuevo.");
+            await cargar(); // el servidor es la fuente de verdad: así el estado siempre coincide
+            setTimeout(() => setAviso(null), 4000);
+        } catch (e: any) {
+            setAviso(null);
+            setError(e?.response?.data?.error ?? "No pudimos completar la acción. Intenta de nuevo.");
         }
     };
 
@@ -92,10 +101,13 @@ export default function AdminUsuarios() {
                             <Text style={styles.sub}>Cuida de quienes forman parte de FoodMap. {lista?.length ?? 0} usuarios registrados.</Text>
                         </View>
                         <View style={styles.grid}>
-                            {[["Activos", conteo.activo], ["Inactivos", conteo.inactivo], ["Suspendidos", conteo.suspendido], ["Total", lista?.length ?? 0]].map(([t, v]) => (
+                            {[["Activos", conteo.activo, "checkmark-circle"], ["Inactivos", conteo.inactivo, "moon"], ["Suspendidos", conteo.suspendido, "ban"], ["Total", lista?.length ?? 0, "people"]].map(([t, v, ic]) => (
                                 <View key={String(t)} style={styles.stat}>
-                                    <Text style={styles.statTitulo}>{t}</Text>
+                                    <View style={styles.statIcono}>
+                                        <Ionicons name={ic as any} size={16} color={colors.primary} />
+                                    </View>
                                     <Text style={styles.statValor}>{v ?? 0}</Text>
+                                    <Text style={styles.statTitulo}>{t}</Text>
                                 </View>
                             ))}
                         </View>
@@ -110,6 +122,12 @@ export default function AdminUsuarios() {
                                 </Pressable>
                             ))}
                         </View>
+                        {!!aviso && (
+                            <View style={styles.aviso}>
+                                <Ionicons name="checkmark-circle" size={18} color="#1F7A44" />
+                                <Text style={styles.avisoTxt}>{aviso}</Text>
+                            </View>
+                        )}
                         {!!error && <Text style={styles.error}>{error}</Text>}
                         <Text style={styles.sub}>Mostrando {visibles.length} de {filtrados.length} usuarios</Text>
                     </View>
@@ -117,17 +135,35 @@ export default function AdminUsuarios() {
                 renderItem={({ item: u }) => {
                     const soyYo = u.id === yo?.id;
                     return (
-                        <View style={styles.fila}>
+                        <View style={[styles.fila, u.estado === "suspendido" && styles.filaSuspendida]}>
+                            {u.estado === "suspendido" && (
+                                <View style={styles.bandaSusp}>
+                                    <Ionicons name="ban" size={13} color="#fff" />
+                                    <Text style={styles.bandaSuspTxt}>Cuenta suspendida</Text>
+                                </View>
+                            )}
                             <View style={{ flexDirection: "row", gap: spacing.md, alignItems: "center" }}>
-                                <Avatar nombre={u.username} size={40} />
+                                <Avatar uri={(u as any).avatar} nombre={u.username} size={42} />
                                 <View style={{ flex: 1 }}>
-                                    <Text style={styles.nombre} numberOfLines={1}>{u.username}</Text>
+                                    <Text style={styles.nombre} numberOfLines={1}>{u.username}{soyYo ? "  (tú)" : ""}</Text>
                                     <Text style={styles.sub} numberOfLines={1}>{u.email || "Sin correo"}</Text>
                                 </View>
                                 <EstadoBadge estado={u.estado} />
                             </View>
+
+                            <View style={styles.roles}>
+                                {(u.roles.length ? u.roles : ["sin rol"]).map((r) => (
+                                    <View key={r} style={[styles.rolChip, r === "admin" && { backgroundColor: colors.primary }]}>
+                                        <Text style={[styles.rolChipTxt, r === "admin" && { color: "#fff" }]}>{ETIQUETA_ROL[r] ?? r}</Text>
+                                    </View>
+                                ))}
+                            </View>
+
                             <View style={styles.pie}>
-                                <Text style={styles.rol}>{u.roles.join(" · ") || "Sin rol"}</Text>
+                                <Pressable style={styles.btnRoles} onPress={() => setRolesDe(u)}>
+                                    <Ionicons name="key-outline" size={15} color={colors.primary} />
+                                    <Text style={styles.accion}>Roles</Text>
+                                </Pressable>
                                 {soyYo ? (
                                     <Text style={styles.sub}>Eres tú</Text>
                                 ) : (
@@ -156,19 +192,31 @@ export default function AdminUsuarios() {
             {accion && dlg && (
                 <ConfirmDialog titulo={dlg.titulo} texto={dlg.texto} confirmarTxt={dlg.boton} destructivo={dlg.rojo} onConfirm={confirmar} onCancel={() => setAccion(null)} />
             )}
+            {rolesDe && (
+                <RolesSheet
+                    usuario={rolesDe}
+                    esYo={rolesDe.id === yo?.id}
+                    onClose={() => setRolesDe(null)}
+                    onSaved={(roles) => {
+                        setLista((p) => p?.map((x) => (x.id === rolesDe.id ? { ...x, roles } : x)) ?? null);
+                        setRolesDe((u) => (u ? { ...u, roles } : u));
+                    }}
+                />
+            )}
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     titulo: { fontSize: 24, fontWeight: "800", color: colors.text },
     sub: { fontSize: 12, color: colors.textMuted },
     grid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
-    stat: { width: "48.5%", backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md },
+    stat: { width: "48.5%", backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md, gap: 2 },
+    statIcono: { width: 28, height: 28, borderRadius: 14, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center", marginBottom: 4 },
     statTitulo: { fontSize: 12, color: colors.textMuted, fontWeight: "600" },
     statValor: { fontSize: 26, fontWeight: "800", color: colors.text },
     busqueda: { flexDirection: "row", alignItems: "center", gap: spacing.sm, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.lg, height: 44 },
-    input: { flex: 1, color: colors.text, fontSize: 14, outlineStyle: "none" } as any,
+    input: { flex: 1, color: colors.text, fontSize: 14, ...({ outlineStyle: "none" } as any) },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
     chip: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 7 },
     chipActivo: { backgroundColor: colors.primary },
@@ -176,9 +224,17 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13 },
     fila: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md, gap: spacing.md },
     nombre: { fontSize: 15, fontWeight: "700", color: colors.text },
+    roles: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+    rolChip: { backgroundColor: colors.primarySoft, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+    rolChipTxt: { fontSize: 11, fontWeight: "700", color: colors.text },
     pie: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderTopWidth: 1, borderTopColor: colors.border, paddingTop: spacing.sm },
-    rol: { fontSize: 12, color: colors.textMuted, textTransform: "capitalize" },
+    btnRoles: { flexDirection: "row", alignItems: "center", gap: 5 },
     accion: { color: colors.primary, fontWeight: "700", fontSize: 13 },
     accionRoja: { color: "#B3261E", fontWeight: "700", fontSize: 13 },
+    aviso: { flexDirection: "row", gap: 8, alignItems: "center", backgroundColor: "#E3F4EA", borderRadius: radius.md, padding: spacing.md },
+    avisoTxt: { color: "#1F7A44", fontWeight: "600", fontSize: 13, flex: 1 },
+    filaSuspendida: { borderWidth: 1.5, borderColor: "#B3261E" },
+    bandaSusp: { flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start", backgroundColor: "#B3261E", borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+    bandaSuspTxt: { color: "#fff", fontSize: 11, fontWeight: "800" },
     vacio: { alignItems: "center", padding: spacing.xl },
-});
+}));

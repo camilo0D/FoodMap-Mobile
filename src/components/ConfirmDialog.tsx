@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 type Props = {
     titulo: string;
@@ -11,6 +11,8 @@ type Props = {
 };
 
 export default function ConfirmDialog({ titulo, texto, confirmarTxt, destructivo, onConfirm, onCancel }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     return (
         <View style={styles.overlay}>
             <Pressable style={StyleSheet.absoluteFill} onPress={onCancel} />
@@ -28,7 +30,7 @@ export default function ConfirmDialog({ titulo, texto, confirmarTxt, destructivo
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center", padding: spacing.xl },
     caja: { width: "100%", backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.xl, gap: spacing.sm },
     titulo: { fontSize: 18, fontWeight: "800", color: colors.text },
@@ -37,4 +39,4 @@ const styles = StyleSheet.create({
     cancelarTxt: { fontWeight: "700", color: colors.text },
     confirmar: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 13, alignItems: "center" },
     confirmarTxt: { color: "#fff", fontWeight: "700" },
-});
+}));

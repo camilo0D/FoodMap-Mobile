@@ -1,9 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 type Props = { pagina: number; total: number; porPagina: number; onChange: (p: number) => void };
 
 export default function Paginador({ pagina, total, porPagina, onChange }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const paginas = Math.max(1, Math.ceil(total / porPagina));
     if (total <= porPagina) return null;
     return (
@@ -19,9 +21,9 @@ export default function Paginador({ pagina, total, porPagina, onChange }: Props)
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     fila: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: spacing.lg },
     btn: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 9 },
     btnTxt: { fontWeight: "700", color: colors.text, fontSize: 13 },
     info: { fontSize: 12, color: colors.textMuted },
-});
+}));

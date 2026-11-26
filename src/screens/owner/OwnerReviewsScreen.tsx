@@ -8,10 +8,12 @@ import Stars from "../../components/Stars";
 import { getMiRestaurante } from "../../services/owner";
 import { getResenas } from "../../services/restaurant";
 import { fechaCorta } from "../../utils/format";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { Restaurante, Resena } from "../../types";
 
 export default function OwnerReviewsScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const [r, setR] = useState<Restaurante | null>(null);
     const [resenas, setResenas] = useState<Resena[] | null>(null);
     const [total, setTotal] = useState(0);
@@ -83,7 +85,7 @@ export default function OwnerReviewsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     resumen: { flexDirection: "row", alignItems: "center", gap: spacing.lg, backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.lg },
@@ -94,4 +96,4 @@ const styles = StyleSheet.create({
     comentario: { fontSize: 13, color: colors.text, lineHeight: 18 },
     vacio: { flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.sm, paddingBottom: 80 },
     vacioTitulo: { fontSize: 16, fontWeight: "700", color: colors.text },
-});
+}));

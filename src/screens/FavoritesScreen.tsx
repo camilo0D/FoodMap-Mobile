@@ -5,9 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import RestaurantListItem from "../components/RestaurantListItem";
 import { useFavorites } from "../context/FavoritesContext";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 export default function FavoritesScreen() {
+  const styles = useStyles();
+  const colors = useColors();
     const navigation = useNavigation<any>();
     const { favoritos, recargar } = useFavorites();
     const [refrescando, setRefrescando] = useState(false);
@@ -55,14 +57,14 @@ export default function FavoritesScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     sub: { fontSize: 13, color: colors.textMuted },
     vacio: { flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.sm, paddingBottom: 80 },
-    icono: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#FBE3D3", alignItems: "center", justifyContent: "center" },
+    icono: { width: 72, height: 72, borderRadius: 36, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center" },
     vacioTitulo: { fontSize: 18, fontWeight: "700", color: colors.text, marginTop: spacing.sm },
     vacioTexto: { fontSize: 14, color: colors.textMuted, textAlign: "center", maxWidth: 260 },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 13, paddingHorizontal: 24, marginTop: spacing.md },
     botonTxt: { color: "#fff", fontWeight: "700" },
-});
+}));

@@ -2,21 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import RestaurantMap from "../components/RestaurantMap";
 import RestaurantCard from "../components/RestaurantCard";
 import FilterSheet, { Filtros, FILTROS_VACIOS } from "../components/FilterSheet";
 import { getRestaurantes } from "../services/restaurant";
 import { useUserLocation } from "../hooks/useUserLocation";
 import { distanciaKm } from "../utils/geo";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { Restaurante } from "../types";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/types";
+import MapaModos from "../components/MapaModos";
 
 const DISTANCIAS = [1, 3, 5, 10];
 
 export default function MapScreen() {
+    const styles = useStyles();
+    const colors = useColors();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [restaurantes, setRestaurantes] = useState<Restaurante[]>([]);
     const [estado, setEstado] = useState<"cargando" | "ok" | "error">("cargando");
@@ -83,14 +85,14 @@ export default function MapScreen() {
 
     return (
         <View style={styles.container}>
-            <RestaurantMap
+            <MapaModos
                 restaurantes={filtrados}
-                seleccionadoId={seleccionado?.id}
+                seleccionado={seleccionado}
                 onSelect={setSeleccionado}
                 ubicacion={ubicacion}
                 centerSignal={centerSignal}
+                onComoLlegar={(r) => navigation.navigate("Ruta", { restaurante: r })}
             />
-
             <SafeAreaView edges={["top"]} style={styles.top} pointerEvents="box-none">
                 <View style={styles.busquedaFila}>
                     <View style={styles.busqueda}>
@@ -180,7 +182,7 @@ export default function MapScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     top: { position: "absolute", top: 0, left: 0, right: 0, paddingHorizontal: spacing.lg, gap: spacing.sm },
     busquedaFila: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.sm },
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     },
     punto: {
         position: "absolute", top: 8, right: 8, width: 9, height: 9, borderRadius: 5,
-        backgroundColor: "#fff", borderWidth: 2, borderColor: colors.primary,
+        backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.primary,
     },
     chips: { gap: spacing.sm },
     chip: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, elevation: 2 },
@@ -223,4 +225,4 @@ const styles = StyleSheet.create({
     },
     vacioBtnTxt: { color: "#fff", fontWeight: "700" },
     vacioLink: { color: colors.primary, fontWeight: "700", marginTop: spacing.sm },
-});
+}));

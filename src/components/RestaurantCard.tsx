@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import FavoriteButton from "./FavoriteButton";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 import type { Restaurante } from "../types";
 
 type Props = {
@@ -12,6 +12,8 @@ type Props = {
 };
 
 export default function RestaurantCard({ restaurante: r, distanciaKm, onClose, onVerMas }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     return (
         <View style={styles.card}>
             {r.imagen ? (
@@ -43,7 +45,7 @@ export default function RestaurantCard({ restaurante: r, distanciaKm, onClose, o
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     card: {
         flexDirection: "row", backgroundColor: colors.surface, borderRadius: radius.lg,
         padding: spacing.md, gap: spacing.md, elevation: 6,
@@ -59,4 +61,4 @@ const styles = StyleSheet.create({
     boton: { backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 6 },
     botonTexto: { color: "#fff", fontSize: 12, fontWeight: "700" },
     cerrar: { position: "absolute", top: 8, right: 8 },
-});
+}));

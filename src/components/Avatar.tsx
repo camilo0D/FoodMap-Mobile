@@ -1,9 +1,10 @@
 import { Image, Text, View } from "react-native";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 
 type Props = { uri?: string | null; nombre: string; size?: number };
 
 export default function Avatar({ uri, nombre, size = 40 }: Props) {
+  const colors = useColors();
     if (uri) return <Image source={{ uri }} style={{ width: size, height: size, borderRadius: size / 2 }} />;
     return (
         <View

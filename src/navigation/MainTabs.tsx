@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 import MapScreen from "../screens/MapScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -15,6 +15,7 @@ const iconos: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionic
 };
 
 export default function MainTabs() {
+  const colors = useColors();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({

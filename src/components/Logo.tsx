@@ -1,8 +1,9 @@
 import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../theme";
+import { useColors } from "../theme";
 
 export default function Logo({ size = 56 }: { size?: number }) {
+  const colors = useColors();
     return (
         <View
             style={{

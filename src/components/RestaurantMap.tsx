@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { View } from "react-native";
 import L from "leaflet";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { Circle, MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { useColors } from "../theme";
 import type { Restaurante } from "../types";
 import type { Coord } from "../utils/geo";
 
@@ -11,6 +12,10 @@ type Props = {
     onSelect: (r: Restaurante) => void;
     ubicacion?: Coord | null;
     centerSignal?: number;
+    seleccionado?: Restaurante | null;
+    radioM?: number;
+    centro?: Coord | null;
+    zoom?: number;
 };
 
 function circulo(color: string, t: number) {
@@ -30,7 +35,12 @@ function Centrar({ ubicacion, senal }: { ubicacion?: Coord | null; senal?: numbe
     return null;
 }
 
-export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, ubicacion, centerSignal }: Props) {
+export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, ubicacion, centerSignal, seleccionado, radioM, centro, zoom }: Props) {
+    const colors = useColors();
+    const normal = useMemo(() => circulo(colors.primary, 30), [colors.primary]);
+    const activo = useMemo(() => circulo("#D83A1B", 38), []);
+    const yo = useMemo(() => circulo("#2F7CF6", 18), []);
+
     useEffect(() => {
         if (document.getElementById("leaflet-css")) return;
         const link = document.createElement("link");
@@ -43,8 +53,8 @@ export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, 
     return (
         <View style={{ flex: 1, zIndex: 0 }}>
             <MapContainer
-                center={[3.8801, -77.0311]}
-                zoom={13}
+                center={centro ? [centro.lat, centro.lng] : [3.8801, -77.0311]}
+                zoom={zoom ?? 13}
                 zoomControl={false}
                 style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
             >
@@ -56,11 +66,18 @@ export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, 
                         <Marker
                             key={r.id}
                             position={[Number(r.latitud), Number(r.longitud)]}
-                            icon={r.id === seleccionadoId ? circulo("#D83A1B", 38) : circulo("#F26A21", 30)}
+                            icon={r.id === seleccionadoId ? activo : normal}
                             eventHandlers={{ click: () => onSelect(r) }}
                         />
                     ))}
-                {ubicacion && <Marker position={[ubicacion.lat, ubicacion.lng]} icon={circulo("#2F7CF6", 18)} />}
+                {ubicacion && <Marker position={[ubicacion.lat, ubicacion.lng]} icon={yo} />}
+                {seleccionado && radioM && seleccionado.latitud && seleccionado.longitud ? (
+                    <Circle
+                        center={[Number(seleccionado.latitud), Number(seleccionado.longitud)]}
+                        radius={radioM}
+                        pathOptions={{ color: colors.primary, fillColor: colors.primary, fillOpacity: 0.18, weight: 2, dashArray: "6 6" }}
+                    />
+                ) : null}
             </MapContainer>
         </View>
     );

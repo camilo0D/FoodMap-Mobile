@@ -9,10 +9,12 @@ import TextField from "../../components/TextField";
 import { useAuth } from "../../context/AuthContext";
 import { registerRestaurant, registerUser } from "../../services/auth";
 import { RegistroForm, registroSchema } from "../../schemas/auth";
-import { colors, radius, spacing } from "../../theme";
+import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
 export default function RegisterScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, "Registro">) {
+  const styles = useStyles();
+  const colors = useColors();
     const { login } = useAuth();
     const [tipo, setTipo] = useState<"usuario" | "restaurante">(route.params?.tipo ?? "usuario");
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
@@ -98,7 +100,7 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
@@ -114,4 +116,4 @@ const styles = StyleSheet.create({
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
     pie: { flexDirection: "row", justifyContent: "center", marginTop: spacing.xl, marginBottom: spacing.xl },
     link: { color: colors.primary, fontWeight: "700", marginTop: 4 },
-});
+}));

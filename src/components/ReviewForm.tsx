@@ -2,11 +2,13 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Stars from "./Stars";
 import { crearResena } from "../services/restaurant";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useColors } from "../theme";
 
 type Props = { restauranteId: string; onClose: () => void; onSent: () => void };
 
 export default function ReviewForm({ restauranteId, onClose, onSent }: Props) {
+  const styles = useStyles();
+  const colors = useColors();
     const [rating, setRating] = useState(0);
     const [comentario, setComentario] = useState("");
     const [enviando, setEnviando] = useState(false);
@@ -55,7 +57,7 @@ export default function ReviewForm({ restauranteId, onClose, onSent }: Props) {
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.35)", justifyContent: "flex-end" },
     sheet: { backgroundColor: colors.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: spacing.xl, gap: spacing.md },
     titulo: { fontSize: 20, fontWeight: "700", color: colors.text },
@@ -66,4 +68,4 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13 },
     boton: { backgroundColor: colors.primary, borderRadius: radius.md, paddingVertical: 14, alignItems: "center" },
     botonTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
-});
+}));
