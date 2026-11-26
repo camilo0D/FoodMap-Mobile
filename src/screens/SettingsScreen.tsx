@@ -4,13 +4,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { useNavigation } from "@react-navigation/native";
+import ThemeSheet from "../components/ThemeSheet";
 import { useAuth } from "../context/AuthContext";
 import { solicitarCodigo } from "../services/auth";
-import { colors, radius, spacing } from "../theme";
+import { radius, spacing, themed, useTheme } from "../theme";
 
 function Fila({ icono, titulo, valor, onPress, cargando }: {
     icono: keyof typeof Ionicons.glyphMap; titulo: string; valor?: string; onPress?: () => void; cargando?: boolean;
 }) {
+    const styles = useStyles();
+    const { colors } = useTheme();
     return (
         <Pressable style={styles.fila} onPress={onPress} disabled={!onPress}>
             <Ionicons name={icono} size={20} color={colors.primary} />
@@ -24,10 +27,13 @@ function Fila({ icono, titulo, valor, onPress, cargando }: {
 }
 
 export default function SettingsScreen() {
+    const styles = useStyles();
+    const { oscuro } = useTheme();
     const navigation = useNavigation<any>();
     const { usuario, logout } = useAuth();
     const [enviando, setEnviando] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [apariencia, setApariencia] = useState(false);
 
     const cambiarClave = async () => {
         if (!usuario?.email) return setError("Tu cuenta no tiene un correo registrado.");
@@ -53,6 +59,16 @@ export default function SettingsScreen() {
                     <Text style={styles.titulo}>Configuración</Text>
                 </View>
 
+                <Text style={styles.seccion}>Apariencia</Text>
+                <View style={styles.grupo}>
+                    <Fila
+                        icono={oscuro ? "moon-outline" : "sunny-outline"}
+                        titulo="Tema y color"
+                        valor={oscuro ? "Modo oscuro" : "Modo claro"}
+                        onPress={() => setApariencia(true)}
+                    />
+                </View>
+
                 <Text style={styles.seccion}>Cuenta</Text>
                 <View style={styles.grupo}>
                     <Fila icono="person-outline" titulo="Usuario" valor={usuario?.username} />
@@ -75,11 +91,12 @@ export default function SettingsScreen() {
                     <Text style={styles.salirTxt}>Cerrar sesión</Text>
                 </Pressable>
             </ScrollView>
+            <ThemeSheet visible={apariencia} onClose={() => setApariencia(false)} />
         </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     volver: { color: colors.textMuted, fontWeight: "600" },
     titulo: { fontSize: 26, fontWeight: "800", color: colors.text },
@@ -91,4 +108,4 @@ const styles = StyleSheet.create({
     error: { color: "#B3261E", fontSize: 13 },
     salir: { flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderRadius: radius.md, paddingVertical: 14 },
     salirTxt: { color: "#B3261E", fontWeight: "700" },
-});
+}));

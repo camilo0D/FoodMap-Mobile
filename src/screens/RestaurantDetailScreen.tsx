@@ -39,8 +39,7 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
         cargarResenas();
     }, [r.id, cargarResenas]);
 
-    const comoLlegar = () =>
-        Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${r.latitud},${r.longitud}`);
+    const comoLlegar = () => navigation.navigate("Ruta", { restaurante: r });
     const llamar = () => Linking.openURL(`tel:${r.telefono}`);
 
     return (

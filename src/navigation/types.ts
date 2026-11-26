@@ -9,6 +9,7 @@ export type RootStackParamList = {
     RestablecerClave: { email: string };
     Tabs: undefined;
     Detalle: { restaurante: Restaurante; distanciaKm?: number | null };
+    Ruta: { restaurante: Restaurante };
     EditarPerfil: undefined;
     MisResenas: undefined;
     Configuracion: undefined;
