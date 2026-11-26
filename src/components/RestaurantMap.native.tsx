@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { StyleSheet, View } from "react-native";
-import { Map, Camera, Marker } from "@maplibre/maplibre-react-native";
+import { View } from "react-native";
+import { Map, Camera, Marker, GeoJSONSource, Layer } from "@maplibre/maplibre-react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { themed, useColors } from "../theme";
 import type { Restaurante } from "../types";
-import type { Coord } from "../utils/geo";
+import { circuloGeoJSON, type Coord } from "../utils/geo";
 
 const osmStyle: any = {
     version: 8,
@@ -25,11 +25,17 @@ type Props = {
     onSelect: (r: Restaurante) => void;
     ubicacion?: Coord | null;
     centerSignal?: number;
+    seleccionado?: Restaurante | null;
+    radioM?: number;
+    centro?: Coord | null;
+    zoom?: number;
 };
 
-export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, ubicacion, centerSignal }: Props) {
-  const styles = useStyles();
-  const colors = useColors();
+export default function RestaurantMap({
+    restaurantes, seleccionadoId, onSelect, ubicacion, centerSignal, seleccionado, radioM, centro, zoom,
+}: Props) {
+    const styles = useStyles();
+    const colors = useColors();
     const cameraRef = useRef<any>(null);
 
     useEffect(() => {
@@ -38,9 +44,33 @@ export default function RestaurantMap({ restaurantes, seleccionadoId, onSelect, 
         }
     }, [centerSignal]);
 
+    // Radio alrededor del local seleccionado (mismo comportamiento que en la web).
+    const centroRadio: Coord | null =
+        seleccionado && seleccionado.latitud && seleccionado.longitud
+            ? { lat: Number(seleccionado.latitud), lng: Number(seleccionado.longitud) }
+            : null;
+
     return (
         <Map style={{ flex: 1 }} mapStyle={osmStyle}>
-            <Camera ref={cameraRef} initialViewState={{ center: [-77.0311, 3.8801], zoom: 13 }} />
+            <Camera
+                ref={cameraRef}
+                initialViewState={{
+                    center: centro ? [centro.lng, centro.lat] : [-77.0311, 3.8801],
+                    zoom: zoom ?? 13,
+                }}
+            />
+
+            {centroRadio && !!radioM && (
+                <GeoJSONSource id="radio-local" data={circuloGeoJSON(centroRadio, radioM) as any}>
+                    <Layer id="radio-local-relleno" type="fill" style={{ fillColor: colors.primary, fillOpacity: 0.14 }} />
+                    <Layer
+                        id="radio-local-borde"
+                        type="line"
+                        style={{ lineColor: colors.primary, lineWidth: 2, lineDasharray: [3, 2] }}
+                    />
+                </GeoJSONSource>
+            )}
+
             {restaurantes
                 .filter((r) => r.latitud && r.longitud)
                 .map((r) => {

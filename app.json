@@ -1,16 +1,19 @@
 {
   "expo": {
-    "name": "FoodMap-Mobile",
+    "name": "FoodMap",
     "slug": "FoodMap-Mobile",
+    "scheme": "foodmap",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "ios": {
-      "supportsTablet": true
-    },
+    "userInterfaceStyle": "automatic",
     "android": {
       "package": "com.foodmap.app",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -24,6 +27,12 @@
     },
     "plugins": [
       "@maplibre/maplibre-react-native",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "FoodMap usa tu ubicación para mostrarte los restaurantes cercanos y calcular la ruta."
+        }
+      ],
       [
         "expo-build-properties",
         {
