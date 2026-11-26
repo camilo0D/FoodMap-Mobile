@@ -10,7 +10,7 @@
                 "buildType": "apk"
             },
             "env": {
-                "EXPO_PUBLIC_API_URL": "https://CAMBIA-ESTO.ngrok-free.app"
+                "EXPO_PUBLIC_API_URL": "https://abcd-1234.ngrok-free.app"
             }
         },
         "production": {
