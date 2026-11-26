@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import OwnerHomeScreen from "../screens/owner/OwnerHomeScreen";
 import OwnerMenuScreen from "../screens/owner/OwnerMenuScreen";
 import OwnerReviewsScreen from "../screens/owner/OwnerReviewsScreen";
+import AdministrarScreen from "../screens/owner/AdministrarScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import { useColors } from "../theme";
@@ -13,11 +14,12 @@ const iconos: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionic
     "Mi local": ["storefront", "storefront-outline"],
     "Menú": ["restaurant", "restaurant-outline"],
     "Reseñas": ["star", "star-outline"],
+    Administrar: ["analytics", "analytics-outline"],
     Perfil: ["person", "person-outline"],
 };
 
 export default function OwnerTabs() {
-  const colors = useColors();
+    const colors = useColors();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -34,8 +36,9 @@ export default function OwnerTabs() {
             <Tab.Screen name="Mi local" component={OwnerHomeScreen} />
             <Tab.Screen name="Menú" component={OwnerMenuScreen} />
             <Tab.Screen name="Reseñas" component={OwnerReviewsScreen} />
+            <Tab.Screen name="Administrar" component={AdministrarScreen} />
             <Tab.Screen name="Perfil" component={ProfileScreen} />
-            <Tab.Screen name="Favoritos" component={FavoritesScreen} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="Favoritos" component={FavoritesScreen} options={{ tabBarButton: () => null, tabBarItemStyle: { display: "none" } }} />
         </Tab.Navigator>
     );
 }

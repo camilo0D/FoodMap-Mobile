@@ -13,7 +13,9 @@ type Props = {
     onSelect: (r: Restaurante) => void;
     ubicacion?: Coord | null;
     centerSignal?: number;
-    onComoLlegar: (r: Restaurante) => void;
+    onComoLlegar?: (r: Restaurante) => void;
+    // distancia (px) desde abajo a la que van los botones del globo y los radios
+    baseControles?: number;
 };
 
 const RADIOS = [
@@ -24,7 +26,7 @@ const RADIOS = [
 
 // Reemplaza a <RestaurantMap/> en MapScreen: mapa plano o globo, radio y "Cómo llegar".
 export default function MapaModos({
-    restaurantes, seleccionado, onSelect, ubicacion, centerSignal, onComoLlegar,
+    restaurantes, seleccionado, onSelect, ubicacion, centerSignal, onComoLlegar, baseControles,
 }: Props) {
     const styles = useStyles();
     const colors = useColors();
@@ -52,7 +54,7 @@ export default function MapaModos({
 
     // MapScreen ya tiene el botón de ubicación en la esquina (46 px). Los nuestros van encima.
     const baseUbicacion = seleccionado ? 140 : 16;
-    const abajoControles = baseUbicacion + 46 + 12;
+    const abajoControles = baseControles ?? baseUbicacion + 46 + 12;
     const abajoLlegar = 140;
 
     return (
@@ -97,7 +99,7 @@ export default function MapaModos({
                 </Pressable>
             </View>
 
-            {seleccionado && (
+            {seleccionado && onComoLlegar && (
                 <Pressable
                     onPress={() => onComoLlegar(seleccionado)}
                     style={[styles.llegar, { bottom: abajoLlegar }]}

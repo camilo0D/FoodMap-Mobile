@@ -6,6 +6,7 @@ import RootNavigator from "./src/navigation/RootNavigator";
 import { AuthProvider } from "./src/context/AuthContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { ThemeProvider, useTheme } from "./src/theme";
+import "./src/utils/dragScroll";
 
 const esWeb = Platform.OS === "web";
 

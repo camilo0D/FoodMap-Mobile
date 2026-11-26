@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import AdminResumen from "./AdminResumen";
 import AdminUsuarios from "./AdminUsuarios";
 import AdminRestaurantes from "./AdminRestaurantes";
+import AdminMapa from "./AdminMapa";
 import AdminCategorias from "./AdminCategorias";
 import AdminRoles from "./AdminRoles";
 import { radius, spacing, themed, useColors } from "../../theme";
@@ -18,6 +19,7 @@ const TABS = [
     { id: "resumen", label: "Resumen", icono: "stats-chart" },
     { id: "usuarios", label: "Usuarios", icono: "people" },
     { id: "restaurantes", label: "Locales", icono: "storefront" },
+    { id: "mapa", label: "Mapa", icono: "map" },
     { id: "categorias", label: "Categorías", icono: "pricetags" },
     { id: "roles", label: "Roles", icono: "shield-checkmark" },
 ] as const;
@@ -112,6 +114,7 @@ export default function AdminScreen() {
                 {tab === "resumen" && <AdminResumen />}
                 {tab === "usuarios" && <AdminUsuarios />}
                 {tab === "restaurantes" && <AdminRestaurantes />}
+                {tab === "mapa" && <AdminMapa />}
                 {tab === "categorias" && <AdminCategorias />}
                 {tab === "roles" && <AdminRoles />}
             </Animated.View>
