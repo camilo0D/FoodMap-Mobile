@@ -1,8 +1,11 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { api } from "../services/api";
 import { tokenStorage } from "../services/tokenStorage";
 import * as authService from "../services/auth";
 import type { Usuario } from "../types";
+
+// Lugar al que se vuelve después de iniciar sesión (modo invitado).
+export type Destino = { name: "Detalle" | "Ruta"; params: any };
 
 type AuthState = {
     usuario: Usuario | null;
@@ -10,6 +13,8 @@ type AuthState = {
     login: (identificador: string, clave: string) => Promise<Usuario>;
     loginGoogle: (idToken: string, tipo?: "usuario" | "restaurante") => Promise<Usuario>;
     logout: () => Promise<void>;
+    destinoPendiente: () => Destino | null;
+    guardarDestino: (d: Destino | null) => void;
 };
 
 const AuthContext = createContext<AuthState>(null as unknown as AuthState);
@@ -18,6 +23,20 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [cargando, setCargando] = useState(true);
+    // Se guarda en una referencia (no en estado) para no re-renderizar toda la app. Vence a los 15 minutos.
+    const destino = useRef<{ d: Destino; t: number } | null>(null);
+    const guardarDestino = (d: Destino | null) => {
+        destino.current = d ? { d, t: Date.now() } : null;
+    };
+    const destinoPendiente = () => {
+        const x = destino.current;
+        if (!x) return null;
+        if (Date.now() - x.t > 15 * 60 * 1000) {
+            destino.current = null;
+            return null;
+        }
+        return x.d;
+    };
 
     useEffect(() => {
         (async () => {
@@ -59,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ usuario, cargando, login, loginGoogle, logout }}>
+        <AuthContext.Provider value={{ usuario, cargando, login, loginGoogle, logout, destinoPendiente, guardarDestino }}>
             {children}
         </AuthContext.Provider>
     );

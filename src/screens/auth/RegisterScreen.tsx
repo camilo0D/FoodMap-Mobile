@@ -13,9 +13,9 @@ import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
 export default function RegisterScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, "Registro">) {
-  const styles = useStyles();
-  const colors = useColors();
-    const { login } = useAuth();
+    const styles = useStyles();
+    const colors = useColors();
+    const { login, guardarDestino } = useAuth();
     const [tipo, setTipo] = useState<"usuario" | "restaurante">(route.params?.tipo ?? "usuario");
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const {
@@ -47,9 +47,15 @@ export default function RegisterScreen({ navigation, route }: NativeStackScreenP
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: spacing.lg }}>
+                <Pressable onPress={() => { guardarDestino(null); navigation.navigate("Inicio"); }} style={{ marginBottom: spacing.lg }}>
                     <Text style={styles.volver}>← Volver al inicio</Text>
                 </Pressable>
+
+                {!!route.params?.motivo && (
+                    <View style={styles.motivo}>
+                        <Text style={styles.motivoTxt}>🔒 {route.params.motivo}</Text>
+                    </View>
+                )}
 
                 <Text style={styles.titulo}>Únete a FoodMap</Text>
                 <Text style={styles.sub}>Descubre restaurantes cerca de ti o muestra el tuyo.</Text>
@@ -104,6 +110,8 @@ const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
+    motivo: { backgroundColor: colors.primarySoft, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.lg },
+    motivoTxt: { color: colors.primary, fontWeight: "700", fontSize: 13 },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text },
     sub: { fontSize: 14, color: colors.textMuted, marginTop: 4 },
     tabs: { flexDirection: "row", backgroundColor: colors.surface, borderRadius: radius.pill, padding: 4, marginTop: spacing.xl },

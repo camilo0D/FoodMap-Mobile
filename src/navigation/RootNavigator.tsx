@@ -17,7 +17,10 @@ import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 import SplashScreen from "../screens/SplashScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import HomeScreen from "../screens/HomeScreen";
+import ExploreScreen from "../screens/ExploreScreen";
+import MapScreen from "../screens/MapScreen";
 import { useAuth } from "../context/AuthContext";
+import { navigationRef } from "./ref";
 import { prefs } from "../services/prefs";
 import type { RootStackParamList } from "./types";
 
@@ -29,7 +32,7 @@ const DURACION_SPLASH_MS = 2900;
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-    const { usuario, cargando } = useAuth();
+    const { usuario, cargando, destinoPendiente, guardarDestino } = useAuth();
     const [onboardingVisto, setOnboardingVisto] = useState<boolean | null>(null);
     const [splashTerminado, setSplashTerminado] = useState(false);
 
@@ -38,6 +41,20 @@ export default function RootNavigator() {
         const t = setTimeout(() => setSplashTerminado(true), DURACION_SPLASH_MS);
         return () => clearTimeout(t);
     }, []);
+
+    // Modo invitado: tras iniciar sesión, vuelve a donde estaba (restaurante, ruta…)
+    useEffect(() => {
+        if (!usuario) return;
+        const d = destinoPendiente();
+        if (!d) return;
+        const t = setTimeout(() => {
+            if (navigationRef.isReady()) {
+                navigationRef.reset({ index: 1, routes: [{ name: "Tabs" }, { name: d.name, params: d.params }] as any });
+            }
+            guardarDestino(null);
+        }, 50);
+        return () => clearTimeout(t);
+    }, [usuario, destinoPendiente, guardarDestino]);
 
     if (cargando || onboardingVisto === null || !splashTerminado) return <SplashScreen />;
 
@@ -68,6 +85,9 @@ export default function RootNavigator() {
                     <Stack.Screen name="Inicio" component={HomeScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />
                     <Stack.Screen name="Registro" component={RegisterScreen} />
+                    <Stack.Screen name="ExplorarInvitado" component={ExploreScreen} />
+                    <Stack.Screen name="MapaInvitado" component={MapScreen} />
+                    <Stack.Screen name="Detalle" component={RestaurantDetailScreen} />
                 </>
             )}
             <Stack.Screen name="RecuperarClave" component={ForgotPasswordScreen} />

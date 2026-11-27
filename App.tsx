@@ -7,6 +7,7 @@ import { AuthProvider } from "./src/context/AuthContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { ThemeProvider, useTheme } from "./src/theme";
 import "./src/utils/dragScroll";
+import { navigationRef } from "./src/navigation/ref";
 
 const esWeb = Platform.OS === "web";
 
@@ -36,7 +37,7 @@ function Raiz() {
       >
         <AuthProvider>
           <FavoritesProvider>
-            <NavigationContainer theme={temaNavegacion}>
+            <NavigationContainer ref={navigationRef} theme={temaNavegacion}>
               <RootNavigator />
             </NavigationContainer>
           </FavoritesProvider>

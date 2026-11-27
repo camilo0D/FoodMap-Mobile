@@ -12,14 +12,22 @@ import { radius, spacing, themed, useColors } from "../theme";
 import type { RootStackParamList } from "../navigation/types";
 import type { Plato, Resena } from "../types";
 import FavoriteButton from "../components/FavoriteButton";
+import LoginGate from "../components/LoginGate";
+import { useAuth } from "../context/AuthContext";
+import { useFavorites } from "../context/FavoritesContext";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Detalle">;
 type Tab = "info" | "menu" | "resenas";
 
 export default function RestaurantDetailScreen({ route, navigation }: Props) {
-  const styles = useStyles();
-  const colors = useColors();
-    const { restaurante: r, distanciaKm } = route.params;
+    const styles = useStyles();
+    const colors = useColors();
+    const { restaurante: r, distanciaKm, accion } = route.params;
+    const { usuario } = useAuth();
+    const { esFavorito, toggle } = useFavorites();
+    const requerirSesion = useRequireAuth();
+    const invitado = !usuario;
     const insets = useSafeAreaInsets();
     const [tab, setTab] = useState<Tab>("info");
     const [platos, setPlatos] = useState<Plato[] | null>(null);
@@ -41,7 +49,33 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
         cargarResenas();
     }, [r.id, cargarResenas]);
 
-    const comoLlegar = () => navigation.navigate("Ruta", { restaurante: r });
+    // Al volver del login con una acción pendiente (reseña / favorito)
+    useEffect(() => {
+        if (!accion || !usuario) return;
+        if (accion === "resena") {
+            setTab("resenas");
+            setVerForm(true);
+            return;
+        }
+        const t = setTimeout(() => { if (!esFavorito(r.id)) toggle(r); }, 900);
+        return () => clearTimeout(t);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accion, usuario]);
+
+    const irLogin = () => navigation.navigate("Login", { motivo: "Inicia sesión para ver todo el detalle." });
+    const irRegistro = () => navigation.navigate("Registro", { motivo: "Crea tu cuenta gratis para ver todo el detalle." });
+    const comoLlegar = () =>
+        requerirSesion(
+            () => navigation.navigate("Ruta", { restaurante: r }),
+            "Inicia sesión para ver cómo llegar.",
+            { name: "Ruta", params: { restaurante: r } }
+        );
+    const escribirResena = () =>
+        requerirSesion(
+            () => setVerForm(true),
+            "Inicia sesión para escribir una reseña.",
+            { name: "Detalle", params: { restaurante: r, distanciaKm, accion: "resena" } }
+        );
     const llamar = () => Linking.openURL(`tel:${r.telefono}`);
 
     return (
@@ -134,7 +168,7 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
                         <View style={{ gap: spacing.md }}>
                             {platos === null && <ActivityIndicator color={colors.primary} />}
                             {platos?.length === 0 && <Text style={styles.sub}>Este restaurante aún no publica su menú.</Text>}
-                            {platos?.map((p) => (
+                            {(invitado ? platos?.slice(0, 2) : platos)?.map((p) => (
                                 <View key={p.id} style={[styles.plato, !p.disponible && { opacity: 0.5 }]}>
                                     {p.imagen ? (
                                         <Image source={{ uri: p.imagen }} style={styles.platoFoto} />
@@ -150,6 +184,14 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
                                     </View>
                                 </View>
                             ))}
+                            {invitado && (platos?.length ?? 0) > 2 && (
+                                <LoginGate
+                                    titulo={`Ver los ${platos!.length - 2} platos restantes`}
+                                    texto="Inicia sesión para ver la carta completa."
+                                    onLogin={irLogin}
+                                    onRegistro={irRegistro}
+                                />
+                            )}
                         </View>
                     )}
 
@@ -160,7 +202,7 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
                             {resenas && resenas.length > 0 && (
                                 <Text style={styles.sub}>{totalResenas} {totalResenas === 1 ? "reseña" : "reseñas"}</Text>
                             )}
-                            {resenas?.map((x) => (
+                            {!invitado && resenas?.map((x) => (
                                 <View key={x.id} style={styles.resena}>
                                     <View style={styles.avatar}>
                                         <Text style={{ color: "#fff", fontWeight: "700" }}>{x.usuario_username.charAt(0).toUpperCase()}</Text>
@@ -175,13 +217,21 @@ export default function RestaurantDetailScreen({ route, navigation }: Props) {
                                     </View>
                                 </View>
                             ))}
+                            {invitado && totalResenas > 0 && (
+                                <LoginGate
+                                    titulo="Lee lo que dicen los comensales"
+                                    texto="Inicia sesión para leer las reseñas y dejar la tuya."
+                                    onLogin={irLogin}
+                                    onRegistro={irRegistro}
+                                />
+                            )}
                         </View>
                     )}
                 </View>
             </ScrollView>
 
             <View style={[styles.barra, { paddingBottom: insets.bottom + spacing.md }]}>
-                <Pressable style={styles.btnPrincipal} onPress={() => setVerForm(true)}>
+                <Pressable style={styles.btnPrincipal} onPress={escribirResena}>
                     <Ionicons name="star" size={18} color="#fff" />
                     <Text style={styles.btnPrincipalTxt}>Escribir una reseña</Text>
                 </Pressable>

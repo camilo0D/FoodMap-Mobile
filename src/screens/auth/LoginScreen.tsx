@@ -12,10 +12,10 @@ import { LoginForm, loginSchema } from "../../schemas/auth";
 import { radius, spacing, themed, useColors } from "../../theme";
 import type { RootStackParamList } from "../../navigation/types";
 
-export default function LoginScreen({ navigation }: NativeStackScreenProps<RootStackParamList, "Login">) {
-  const styles = useStyles();
-  const colors = useColors();
-    const { login } = useAuth();
+export default function LoginScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, "Login">) {
+    const styles = useStyles();
+    const colors = useColors();
+    const { login, guardarDestino } = useAuth();
     const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
     const {
         control, handleSubmit, formState: { errors, isSubmitting },
@@ -40,9 +40,15 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<RootS
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-                <Pressable onPress={() => navigation.navigate("Inicio")} style={{ marginBottom: spacing.lg }}>
+                <Pressable onPress={() => { guardarDestino(null); navigation.navigate("Inicio"); }} style={{ marginBottom: spacing.lg }}>
                     <Text style={styles.volver}>← Volver al inicio</Text>
                 </Pressable>
+
+                {!!route.params?.motivo && (
+                    <View style={styles.motivo}>
+                        <Text style={styles.motivoTxt}>🔒 {route.params.motivo}</Text>
+                    </View>
+                )}
 
                 <Logo size={56} />
                 <Text style={styles.marca}>FoodMap</Text>
@@ -99,6 +105,8 @@ const useStyles = themed((colors) => ({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { padding: spacing.xl, paddingTop: spacing.xl },
     volver: { color: colors.textMuted, fontWeight: "600" },
+    motivo: { backgroundColor: colors.primarySoft, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.lg },
+    motivoTxt: { color: colors.primary, fontWeight: "700", fontSize: 13 },
     marca: { fontSize: 18, fontWeight: "800", color: colors.primary, marginTop: spacing.sm },
     titulo: { fontSize: 28, fontWeight: "800", color: colors.text, marginTop: spacing.xl },
     sub: { fontSize: 14, color: colors.textMuted, marginTop: 4 },

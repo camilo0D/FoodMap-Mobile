@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import RestaurantListItem from "../components/RestaurantListItem";
 import FilterSheet, { Filtros, FILTROS_VACIOS } from "../components/FilterSheet";
@@ -15,12 +15,13 @@ import type { RootStackParamList } from "../navigation/types";
 type Orden = "rating" | "cerca";
 
 export default function ExploreScreen() {
-  const styles = useStyles();
-  const colors = useColors();
+    const styles = useStyles();
+    const colors = useColors();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { restaurantes, estado, recargar } = useRestaurantes();
     const { ubicacion, estado: estadoUb, solicitar } = useUserLocation();
-    const [busqueda, setBusqueda] = useState("");
+    const route = useRoute<any>();
+    const [busqueda, setBusqueda] = useState<string>(route.params?.busqueda ?? "");
     const [categoriaId, setCategoriaId] = useState<string | null>(null);
     const [orden, setOrden] = useState<Orden>("rating");
     const [filtros, setFiltros] = useState<Filtros>(FILTROS_VACIOS);
@@ -77,6 +78,12 @@ export default function ExploreScreen() {
 
     const cabecera = (
         <View style={{ gap: spacing.md, paddingBottom: spacing.md }}>
+            {navigation.canGoBack() && (
+                <Pressable onPress={() => navigation.goBack()} style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                    <Ionicons name="arrow-back" size={20} color={colors.text} />
+                    <Text style={{ color: colors.textMuted, fontWeight: "600" }}>Volver</Text>
+                </Pressable>
+            )}
             <Text style={styles.titulo}>Explorar</Text>
             <View style={styles.busquedaFila}>
                 <View style={styles.busqueda}>

@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/types";
 import MapaModos from "../components/MapaModos";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 const DISTANCIAS = [1, 3, 5, 10];
 
@@ -20,6 +21,7 @@ export default function MapScreen() {
     const styles = useStyles();
     const colors = useColors();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const requerirSesion = useRequireAuth();
     const [restaurantes, setRestaurantes] = useState<Restaurante[]>([]);
     const [estado, setEstado] = useState<"cargando" | "ok" | "error">("cargando");
     const [busqueda, setBusqueda] = useState("");
@@ -91,7 +93,13 @@ export default function MapScreen() {
                 onSelect={setSeleccionado}
                 ubicacion={ubicacion}
                 centerSignal={centerSignal}
-                onComoLlegar={(r) => navigation.navigate("Ruta", { restaurante: r })}
+                onComoLlegar={(r) =>
+                    requerirSesion(
+                        () => navigation.navigate("Ruta", { restaurante: r }),
+                        "Inicia sesión para ver cómo llegar.",
+                        { name: "Ruta", params: { restaurante: r } }
+                    )
+                }
             />
             <SafeAreaView edges={["top"]} style={styles.top} pointerEvents="box-none">
                 <View style={styles.busquedaFila}>
@@ -148,6 +156,12 @@ export default function MapScreen() {
                         <Text style={styles.vacioLink}>Limpiar filtros</Text>
                     </Pressable>
                 </View>
+            )}
+
+            {navigation.canGoBack() && (
+                <Pressable style={[styles.atrasBtn, { bottom: seleccionado ? 140 : spacing.lg }]} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={22} color={colors.text} />
+                </Pressable>
             )}
 
             <Pressable style={[styles.ubicBtn, { bottom: seleccionado ? 140 : spacing.lg }]} onPress={irAMiUbicacion}>
@@ -209,6 +223,10 @@ const useStyles = themed((colors) => ({
         paddingHorizontal: 10, paddingVertical: 4, fontSize: 12, color: colors.textMuted, overflow: "hidden",
     },
     tarjeta: { position: "absolute", left: spacing.lg, right: spacing.lg, bottom: spacing.lg },
+    atrasBtn: {
+        position: "absolute", left: spacing.lg, width: 46, height: 46, borderRadius: 23,
+        backgroundColor: colors.surface, alignItems: "center", justifyContent: "center", elevation: 5,
+    },
     ubicBtn: {
         position: "absolute", right: spacing.lg, width: 46, height: 46, borderRadius: 23,
         backgroundColor: colors.surface, alignItems: "center", justifyContent: "center", elevation: 5,

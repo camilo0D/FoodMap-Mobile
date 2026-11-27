@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, FlatList, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, FlatList, Image, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -68,6 +68,7 @@ export default function HomeScreen({ navigation }: NativeStackScreenProps<RootSt
     const [lista, setLista] = useState<Restaurante[]>([]);
     const [cat, setCat] = useState<string | null>(null);
     const [abierto, setAbierto] = useState<number | null>(0);
+    const [q, setQ] = useState("");
 
     useEffect(() => {
         getRestaurantes().then(setLista).catch(() => { });
@@ -90,6 +91,7 @@ export default function HomeScreen({ navigation }: NativeStackScreenProps<RootSt
 
     const totalResenas = lista.reduce((s, r) => s + (Number((r as any).total_resenas) || 0), 0);
     const irALogin = () => navigation.navigate("Login");
+    const buscar = () => navigation.navigate("ExplorarInvitado", { busqueda: q.trim() || undefined });
 
     return (
         <SafeAreaView style={styles.container} edges={["top"]}>
@@ -106,10 +108,23 @@ export default function HomeScreen({ navigation }: NativeStackScreenProps<RootSt
                     <View style={{ flex: 1, gap: spacing.sm }}>
                         <Text style={styles.heroSaludo}>{saludo()} 👋</Text>
                         <Text style={styles.heroTitulo}>¿Qué se te antoja hoy?</Text>
-                        <Pressable style={styles.buscador} onPress={irALogin}>
+                        <View style={styles.buscador}>
                             <Ionicons name="search" size={18} color={colors.textMuted} />
-                            <Text style={styles.buscadorTxt}>Buscar restaurantes cerca de ti</Text>
-                        </Pressable>
+                            <TextInput
+                                style={styles.buscadorInput}
+                                value={q}
+                                onChangeText={setQ}
+                                placeholder="Buscar restaurantes cerca de ti"
+                                placeholderTextColor={colors.textMuted}
+                                returnKeyType="search"
+                                onSubmitEditing={buscar}
+                            />
+                            {!!q && (
+                                <Pressable onPress={buscar} hitSlop={8}>
+                                    <Ionicons name="arrow-forward-circle" size={22} color={colors.primary} />
+                                </Pressable>
+                            )}
+                        </View>
                     </View>
                     <Pulso />
                 </View>
@@ -120,6 +135,17 @@ export default function HomeScreen({ navigation }: NativeStackScreenProps<RootSt
                     </Pressable>
                     <Pressable style={styles.btnSecundario} onPress={() => navigation.navigate("Registro")}>
                         <Text style={styles.btnSecundarioTxt}>Crear cuenta</Text>
+                    </Pressable>
+                </View>
+
+                <View style={styles.acciones}>
+                    <Pressable style={styles.atajo} onPress={() => navigation.navigate("ExplorarInvitado")}>
+                        <Ionicons name="compass-outline" size={18} color={colors.primary} />
+                        <Text style={styles.atajoTxt}>Explorar</Text>
+                    </Pressable>
+                    <Pressable style={styles.atajo} onPress={() => navigation.navigate("MapaInvitado")}>
+                        <Ionicons name="map-outline" size={18} color={colors.primary} />
+                        <Text style={styles.atajoTxt}>Ver mapa</Text>
                     </Pressable>
                 </View>
 
@@ -159,7 +185,7 @@ export default function HomeScreen({ navigation }: NativeStackScreenProps<RootSt
                     ListEmptyComponent={<Text style={styles.vacio}>Aún no hay restaurantes en esta categoría.</Text>}
                     renderItem={({ item: r }) => (
                         <Pressable
-                            onPress={irALogin}
+                            onPress={() => navigation.navigate("Detalle", { restaurante: r })}
                             style={({ pressed }) => [styles.tarjeta, pressed && { transform: [{ scale: 0.97 }] }]}
                         >
                             {r.imagen ? (
@@ -228,7 +254,9 @@ const useStyles = themed((colors) => ({
         flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: colors.surface,
         borderRadius: radius.pill, paddingHorizontal: spacing.md, height: 42, marginTop: spacing.sm,
     },
-    buscadorTxt: { color: colors.textMuted, fontSize: 13, flex: 1 },
+    buscadorInput: { flex: 1, color: colors.text, fontSize: 13, paddingVertical: 0 },
+    atajo: { flex: 1, flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", backgroundColor: colors.surface, borderRadius: radius.md, paddingVertical: 12, borderWidth: 1, borderColor: colors.border },
+    atajoTxt: { color: colors.text, fontWeight: "700" },
     pulsoCaja: { width: 84, height: 84, alignItems: "center", justifyContent: "center" },
     anillo: { position: "absolute", width: 70, height: 70, borderRadius: 35, backgroundColor: "#fff" },
     pin: { width: 52, height: 52, borderRadius: 26, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", elevation: 4 },
