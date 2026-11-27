@@ -1,4 +1,5 @@
 import type { Plato, Restaurante } from "../types";
+import type { ProductoNegocio } from "../services/negocio";
 
 // Acción que se retoma al volver de iniciar sesión.
 export type AccionPendiente = "resena" | "favorito";
@@ -20,4 +21,7 @@ export type RootStackParamList = {
     Configuracion: undefined;
     EditarLocal: { restaurante?: Restaurante } | undefined;
     EditarPlato: { restauranteId: string; plato?: Plato };
+    Negocio: undefined;
+    Inventario: undefined;
+    ProductoInventario: { producto: ProductoNegocio };
 };

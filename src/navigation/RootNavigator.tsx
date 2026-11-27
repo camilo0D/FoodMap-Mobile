@@ -17,6 +17,9 @@ import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 import SplashScreen from "../screens/SplashScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import HomeScreen from "../screens/HomeScreen";
+import NegocioScreen from "../screens/owner/NegocioScreen";
+import InventarioScreen from "../screens/owner/InventarioScreen";
+import ProductoInventarioScreen from "../screens/owner/ProductoInventarioScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import MapScreen from "../screens/MapScreen";
 import { useAuth } from "../context/AuthContext";
@@ -78,6 +81,9 @@ export default function RootNavigator() {
                     <Stack.Screen name="Configuracion" component={SettingsScreen} />
                     <Stack.Screen name="EditarLocal" component={EditLocalScreen} />
                     <Stack.Screen name="EditarPlato" component={PlatoFormScreen} />
+                    <Stack.Screen name="Negocio" component={NegocioScreen} />
+                    <Stack.Screen name="Inventario" component={InventarioScreen} />
+                    <Stack.Screen name="ProductoInventario" component={ProductoInventarioScreen} />
                 </>
             ) : (
                 <>
